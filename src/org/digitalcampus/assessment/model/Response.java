@@ -1,0 +1,73 @@
+package org.digitalcampus.assessment.model;
+
+import java.io.Serializable;
+
+public class Response implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5970350772982572264L;
+	private static final String TAG = "Response";
+	private int dbid;
+	private String refid;
+	
+	private String questionrefid;
+	private String quizrefid;
+	
+	private int orderno;
+	private String text;
+	private float score;
+	private boolean isSelected;
+	
+	public String getQuestionRefid() {
+		return questionrefid;
+	}
+	public void setQuestionRefid(String questionrefid) {
+		this.questionrefid = questionrefid;
+	}
+	public String getRefid() {
+		return refid;
+	}
+	public void setRefid(String refid) {
+		this.refid = refid;
+	}
+	public String getQuizRefid() {
+		return quizrefid;
+	}
+	public void setQuizRefid(String quizrefid) {
+		this.quizrefid = quizrefid;
+	}
+	public int getOrderno() {
+		return orderno;
+	}
+	public void setOrderno(int orderno) {
+		this.orderno = orderno;
+	}
+	public String getText() {
+		return text;
+	}
+	public void setText(String text) {
+		this.text = text;
+	}
+	public float getScore() {
+		return score;
+	}
+	public void setScore(float score) {
+		this.score = score;
+	}
+	public boolean isSelected() {
+		return isSelected;
+	}
+	public void setSelected(boolean isSelected) {
+		this.isSelected = isSelected;
+	}
+	public int getDbid() {
+		return dbid;
+	}
+	public void setDbid(int dbid) {
+		this.dbid = dbid;
+	}
+	
+	
+}
