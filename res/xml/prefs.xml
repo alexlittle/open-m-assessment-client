@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference 
+    	android:title="@string/prefServer" 
+    	android:key="prefServer" 
+    	android:defaultValue="@string/prefServerDefault"></EditTextPreference>
+    <EditTextPreference 
+    	android:title="@string/prefUsername"
+    	android:key="prefUsername"></EditTextPreference>
+    <EditTextPreference 
+    	android:title="@string/prefPassword" 
+    	android:key="prefPassword"></EditTextPreference>
+    <PreferenceCategory
+		android:title="@string/prefsAdvanced">
+		<EditTextPreference 
+	    	android:title="@string/prefServerTimeoutConnection" 
+	    	android:key="prefServerTimeoutConnection"
+	    	android:defaultValue="@string/prefServerTimeoutConnectionDefault"></EditTextPreference>
+	    <EditTextPreference 
+	    	android:title="@string/prefServerTimeoutResponse" 
+	    	android:key="prefServerTimeoutResponse"
+			android:defaultValue="@string/prefServerTimeoutResponseDefault"></EditTextPreference>
+		<EditTextPreference 
+	    	android:title="@string/prefServerListPath" 
+	    	android:key="prefServerListPath"
+			android:defaultValue="@string/prefServerListPathDefault"></EditTextPreference>
+		<EditTextPreference 
+	    	android:title="@string/prefServerSubmitPath" 
+	    	android:key="prefServerSubmitPath"
+			android:defaultValue="@string/prefServerSubmitPathDefault"></EditTextPreference>
+	</PreferenceCategory>
+</PreferenceScreen>

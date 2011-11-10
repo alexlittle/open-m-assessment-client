@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="about">Assessment application from Digital Campus for more info visit: http://digital-campus.org</string>
+	<string name="version">v2 (2 Nov 2011)</string>
+	<string name="title_about">About</string>
+	<string name="title_select_quiz">Select a quiz</string>
+	<string name="title_quiz">%1$s: Question %2$d of %3$d</string>
+	<string name="title_manage_quiz">Manage quizzes</string>
+	<string name="app_name">Assessment</string>
+	<string name="main_menu_message">Digital Campus</string>
+	<string name="end_text">Congratulations, you\'ve completed the quiz</string>
+	<string name="endscore_text">You scored:</string>
+	<string name="title_prefs">Preferences</string>
+	<string name="home_btn">Return to home</string>
+	<string name="take_quiz_btn_text">Take a quiz</string>
+	<string name="manage_quiz_btn_text">Manage quizzes</string>
+	<string name="list_quiz_btn_text">Get from server</string>
+	<string name="quiz_summary">Quiz Results</string>
+	<string name="quiz_attempts">Previous Attempts</string>
+	<string name="results_btn_text">View Previous Scores</string>
+	<string name="submit_btn_text">Submit Quizzes (%1$d)</string>
+	<string name="clear_submitted_btn_text">Clear</string>
+	<string name="submit_activity_label">Submit Quiz Results</string>
+	<string name="submitnow_btn_text">Submit now</string>
+
+	<string name="noconnection">No connection currently available, please try later.\n</string>
+	
+	<string name="tosubmit">There are %1$d quiz results waiting to be submitted\n</string>
+	<string name="submitting">Sending quiz results %1$d of %2$d: %3$s\n</string>
+	<string name="submitted">Successfully sent %1$d of %2$d quiz results\n</string>
+
+	<string name="previous">&lt;&lt; Prev</string>
+	<string name="next">Next &gt;&gt;</string>
+	<string name="mark">Get answer</string>
+	<string name="end">Get results &gt;&gt;</string>
+	
+	<string name="correct">Correct, Well done!</string>
+	<string name="wrong">Sorry, that\'s not right, try again.</string>
+
+
+	<string name="prefServer">Server</string>
+	<string name="prefUsername">Username</string>
+	<string name="prefPassword">Password</string>
+	<string name="prefServerDefault">http://alexlittle.net/assessment-sc/</string>
+	<string name="prefsAdvanced">Advanced preferences</string>
+	<string name="prefServerTimeoutConnection">Connection timeout</string>
+	<string name="prefServerTimeoutConnectionDefault">10000</string>
+	<string name="prefServerTimeoutResponse">Response timeout</string>
+	<string name="prefServerTimeoutResponseDefault">20000</string>
+    <string name="prefServerListPath">Quiz list path</string>
+    <string name="prefServerSubmitPath">Submit results path</string>
+    <string name="prefServerListPathDefault">list/</string>
+    <string name="prefServerSubmitPathDefault">submit/</string>
+</resources>

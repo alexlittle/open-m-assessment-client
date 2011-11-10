@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:icon="@android:drawable/ic_menu_preferences" android:id="@+id/itemPrefs" android:title="@string/title_prefs"></item>
+    <item android:icon="@android:drawable/ic_menu_info_details" android:id="@+id/itemAbout" android:title="@string/title_about"></item>
+</menu>
