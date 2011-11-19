@@ -261,7 +261,7 @@ public class DbHelper extends SQLiteOpenHelper{
 		try {
 			String quizRefId = (String) json.get("refid");
 			String title = (String) json.get("title");
-			int maxscore = (Integer) json.get("maxscore");
+			int maxscore = Integer.parseInt((String) json.get("maxscore"));
 			clearQuiz(quizRefId);
 			
 			// add to Quiz table
@@ -277,9 +277,9 @@ public class DbHelper extends SQLiteOpenHelper{
 			for (int i=0; i<questions.length(); i++){
 				JSONObject q = (JSONObject) questions.get(i);
 				String questionRefId = (String) q.get("refid");
-				int qorderno = (Integer) q.get("orderno");
+				int qorderno = Integer.parseInt((String) q.get("orderno"));
 				String qtext = (String) q.get("text");
-				int qscore = (Integer) q.get("score");
+				int qscore = Integer.parseInt((String) q.get("score"));
 				String qtype = (String) q.get("type");
 				String qhint = (String) q.optString("hint");
 				
@@ -299,9 +299,9 @@ public class DbHelper extends SQLiteOpenHelper{
 				for (int j=0; j<responses.length(); j++){
 					JSONObject r = (JSONObject) responses.get(j);
 					String responseRefId = (String) r.get("refid");
-					int rorderno = (Integer) r.get("orderno");
+					int rorderno = Integer.parseInt((String) r.get("orderno"));
 					String rtext = (String) r.get("text");
-					int rscore = (Integer) r.get("score");
+					int rscore = Integer.parseInt((String) r.get("score"));
 					
 					// add to QuizQuestionResponse table
 					ContentValues rvalues = new ContentValues();
