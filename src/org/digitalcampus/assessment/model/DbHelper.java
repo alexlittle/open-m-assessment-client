@@ -15,7 +15,7 @@ import android.util.Log;
 public class DbHelper extends SQLiteOpenHelper{
 	static final String TAG = "DbHelper";
 	static final String DB_NAME = "assessment.db"; 
-	static final int DB_VERSION = 14; 
+	static final int DB_VERSION = 15; 
 	
 	// Quiz Table
 	public static final String QUIZ_TABLE = "Quiz";
