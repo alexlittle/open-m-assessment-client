@@ -148,8 +148,8 @@ public class SubmitActivity extends Activity {
             	Result r = new Result();
             	r.url = url;
             	r.rowId = cur.getInt(cur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_ID));
-            	r.userName = prefs.getString("prefUsername", "");
-            	r.password = prefs.getString("prefUsername", "");
+            	r.username = prefs.getString("prefUsername", "");
+            	r.password = prefs.getString("prefPassword", "");
             	r.content = json.toString();
             	resultsToSend[counter] = r;
         	} catch (Exception e){
@@ -184,7 +184,7 @@ public class SubmitActivity extends Activity {
     private class Result{
     	int rowId;
     	String url;
-    	String userName;
+    	String username;
     	String password;
     	String content;
     }
@@ -226,7 +226,7 @@ public class SubmitActivity extends Activity {
     				
     				// add post params
     				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
-    				nameValuePairs.add(new BasicNameValuePair("username", r.userName));
+    				nameValuePairs.add(new BasicNameValuePair("username", r.username));
     				nameValuePairs.add(new BasicNameValuePair("password", r.password));
     				nameValuePairs.add(new BasicNameValuePair("content", r.content));
     				httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
