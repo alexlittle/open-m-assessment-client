@@ -58,20 +58,8 @@ public class SubmitActivity extends Activity {
         submitTitle = (TextView) findViewById(R.id.submittitle);
         progress = (TextView) findViewById(R.id.submitprogress);
         
-        Button home = (Button) findViewById(R.id.homeBtn);
         submitNow = (Button) findViewById(R.id.submitnowBtn);
-
-        home.setOnClickListener(new View.OnClickListener() {
-        	@Override
-			public void onClick(View arg0) {
-        		Intent i = new Intent(SubmitActivity.this, AssessmentActivity.class);
-        		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        		startActivity(i);
-        		finish();
-        	}
-        });
         
-
         submitNow.setOnClickListener(new View.OnClickListener() {
         	@Override
 			public void onClick(View arg0) {
@@ -100,6 +88,8 @@ public class SubmitActivity extends Activity {
         if(!isNetworkAvailable()){
         	progress.append(getString(R.string.noconnection));
         	submitNow.setEnabled(false);
+        } else {
+        	submit();
         }
     }
     

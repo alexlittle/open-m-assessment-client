@@ -25,18 +25,7 @@ public class ResultsActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.results);
         
-        resetListing();
-        
-        Button homeBtn = (Button) findViewById(R.id.homeBtn);
-        homeBtn.setOnClickListener(new View.OnClickListener() {
-        	@Override
-			public void onClick(View arg0) {
-        		Intent i = new Intent(ResultsActivity.this, AssessmentActivity.class);
-        		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        		startActivity(i);
-        		finish();
-        	}
-        });       
+        resetListing();     
         
         
         Button clearBtn = (Button) findViewById(R.id.clear_submitted_btn);

@@ -51,16 +51,5 @@ public class SelectQuizActivity extends Activity{
         cur.close();
         dbHelper.close();        
         
-        Button home = (Button) findViewById(R.id.homeBtn);
-        home.setOnClickListener(new View.OnClickListener() {
-        	@Override
-			public void onClick(View arg0) {
-        		Intent i = new Intent(SelectQuizActivity.this, AssessmentActivity.class);
-        		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        		startActivity(i);
-        		finish();
-        	}
-        });
-        
     }
 }

@@ -18,16 +18,6 @@
             android:textSize="20dp"
             android:textStyle="bold"
             android:layout_margin="10dp" 
-            android:layout_weight=".5"
-            />
-		<Button android:id="@+id/homeBtn"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/home_btn" 
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:layout_margin="10dp" 
-            android:layout_weight=".5"
             />
 	</LinearLayout>
 	<ListView android:id="@android:id/android:list" android:layout_width="fill_parent"

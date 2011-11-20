@@ -12,17 +12,6 @@ public class AboutActivity extends Activity{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.about);
-        
-        Button homeBtn = (Button) findViewById(R.id.homeBtn);
-        homeBtn.setOnClickListener(new View.OnClickListener() {
-        	@Override
-			public void onClick(View arg0) {
-        		Intent i = new Intent(AboutActivity.this, AssessmentActivity.class);
-        		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        		startActivity(i);
-        		finish();
-        	}
-        });  
+        setContentView(R.layout.about); 
     }
 }

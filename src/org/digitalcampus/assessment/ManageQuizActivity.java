@@ -66,19 +66,11 @@ public class ManageQuizActivity extends ListActivity{
         	}
         });
         
-        Button home = (Button) findViewById(R.id.homeBtn);
-        home.setOnClickListener(new View.OnClickListener() {
-        	@Override
-			public void onClick(View arg0) {
-        		Intent i = new Intent(ManageQuizActivity.this, AssessmentActivity.class);
-        		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        		startActivity(i);
-        		finish();
-        	}
-        });
-        
     }
-    
+    protected void onStart(){
+    	super.onStart();
+    	getList();
+    }
     
     private void getList(){
   

@@ -38,18 +38,16 @@ public class QuizActivityEnd extends Activity {
         	// TODO save scores to DB
         	saveScores();
         } 
-
-        Button home = (Button) findViewById(R.id.homeBtn);
-        home.setOnClickListener(new View.OnClickListener() {
+       
+        Button takeAnotherBtn = (Button) findViewById(R.id.take_another_quiz_btn);
+        takeAnotherBtn.setOnClickListener(new View.OnClickListener() {
         	@Override
 			public void onClick(View arg0) {
-        		Intent i = new Intent(QuizActivityEnd.this, AssessmentActivity.class);
+        		Intent i = new Intent(QuizActivityEnd.this, SelectQuizActivity.class);
         		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         		startActivity(i);
-        		finish();
         	}
         });
-        
     }
    
     

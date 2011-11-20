@@ -18,22 +18,12 @@
 		android:layout_alignParentBottom="true">
 		<Button android:id="@+id/clear_submitted_btn" 
 			android:layout_height="50dp" 
-			android:layout_width="wrap_content"
-			android:layout_weight=".5" 
+			android:layout_width="fill_parent"
 			android:text="@string/clear_submitted_btn_text"
-			android:textSize="20dp" android:textStyle="bold"
-			android:layout_alignParentLeft="true"
+			android:textSize="20dp" 
+			android:textStyle="bold"
 			android:layout_margin="10dp" 
 			/>
-		<Button android:id="@+id/homeBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_weight=".5"
-            android:text="@string/home_btn" 
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:layout_margin="10dp" 
-            />
 	</LinearLayout>
 	<ListView android:id="@android:id/android:list" android:layout_width="fill_parent"
 		android:layout_height="0dip" android:choiceMode="multipleChoice"
