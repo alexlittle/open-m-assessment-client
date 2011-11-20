@@ -6,7 +6,7 @@
 	<string name="title_select_quiz">Select a quiz</string>
 	<string name="title_quiz">%1$s: Question %2$d of %3$d</string>
 	<string name="title_manage_quiz">Manage quizzes</string>
-	<string name="app_name">Assessment</string>
+	<string name="app_name">mQuiz</string>
 	<string name="main_menu_message">Digital Campus</string>
 	<string name="end_text">Congratulations, you\'ve completed the quiz</string>
 	<string name="endscore_text">You scored:</string>
