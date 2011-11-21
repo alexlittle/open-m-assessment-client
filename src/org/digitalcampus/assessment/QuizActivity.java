@@ -3,6 +3,7 @@ package org.digitalcampus.assessment;
 import org.digitalcampus.assessment.model.*;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class QuizActivity extends Activity {
 	
@@ -50,23 +52,30 @@ public class QuizActivity extends Activity {
         	@Override
 			public void onClick(View arg0) {
         		// save answer
-        		saveAnswer();
-        		
-        		if(quiz.hasNext()){
-    				quiz.moveNext();
-    				showQuestion();
-    			} else {
-    				quiz.mark();
-    				//  prevent ability to track back to quiz
-    				//
-    				Intent i = new Intent(QuizActivity.this, QuizActivityEnd.class);
-    				i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-    				Bundle rb = new Bundle();
-    				rb.putSerializable("quiz",quiz);
-    				i.putExtras(rb);
-    				startActivity(i);
-    				finish();
-    			}
+        		if (saveAnswer()){
+	        		if(quiz.hasNext()){
+	    				quiz.moveNext();
+	    				showQuestion();
+	    			} else {
+	    				quiz.mark();
+	    				//  prevent ability to track back to quiz
+	    				//
+	    				Intent i = new Intent(QuizActivity.this, QuizActivityEnd.class);
+	    				i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+	    				Bundle rb = new Bundle();
+	    				rb.putSerializable("quiz",quiz);
+	    				i.putExtras(rb);
+	    				startActivity(i);
+	    				finish();
+	    			}
+        		} else {
+        			Context context = getApplicationContext();
+        			CharSequence text = context.getString(R.string.please_answer);
+        			int duration = Toast.LENGTH_SHORT;
+
+        			Toast toast = Toast.makeText(context, text, duration);
+        			toast.show();
+        		}
         	}
         });
         
@@ -132,7 +141,7 @@ public class QuizActivity extends Activity {
     	
     }
     
-    private void saveAnswer(){
+    private boolean saveAnswer(){
     	RadioGroup responsesRG = (RadioGroup) findViewById(quiz.questions.get(quiz.getCurrentq()).getDbid());
     	int resp = responsesRG.getCheckedRadioButtonId();
     	View rb = responsesRG.findViewById(resp);
@@ -144,8 +153,11 @@ public class QuizActivity extends Activity {
     	if (idx >= 0){
     		quiz.questions.get(quiz.getCurrentq()).setResponseSelected(idx);
     		quiz.questions.get(quiz.getCurrentq()).mark();
-    		//Log.d(TAG, "Score for question is: " + String .valueOf(quiz.questions.get(quiz.getCurrentq()).getUserscore()) );
+    		return true;
+    	} else {
+    		return false;
     	}
+    	
     }
     
     private void loadQuiz(){

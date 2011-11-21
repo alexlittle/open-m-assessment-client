@@ -74,7 +74,7 @@ public class QuizActivityEnd extends Activity {
 			    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_RESPONSEREFID, r.getRefid());
 			    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_SCORE, r.getScore());
 			    		dbHelper.saveQuizAttemptResponse(rValues);
-	    			}
+	    			} 
 	    		}
 	    	}
     	}

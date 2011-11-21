@@ -22,7 +22,8 @@
 	<string name="submit_activity_label">Submit Quiz Results</string>
 	<string name="submitnow_btn_text">Submit now</string>
 	<string name="take_another_quiz_btn_text">Take another quiz</string>
-
+	<string name="please_answer">Please give an answer before going to the next question</string>
+	
 	<string name="noconnection">No connection currently available, please try later.\n</string>
 	
 	<string name="tosubmit">There are %1$d quiz results waiting to be submitted\n</string>

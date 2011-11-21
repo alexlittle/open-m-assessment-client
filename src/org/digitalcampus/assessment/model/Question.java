@@ -52,39 +52,51 @@ public class Question implements Serializable{
 			userscore = total;
 		}
 	}
+	
 	public String getRefid() {
 		return refid;
 	}
+	
 	public void setRefid(String refid) {
 		this.refid = refid;
 	}
+	
 	public String getQuizRefid() {
 		return quizrefid;
 	}
+	
 	public void setQuizRefid(String quizrefid) {
 		this.quizrefid = quizrefid;
 	}
+	
 	public int getOrderno() {
 		return orderno;
 	}
+	
 	public void setOrderno(int orderno) {
 		this.orderno = orderno;
 	}
+	
 	public int getMaxscore() {
 		return maxscore;
 	}
+	
 	public void setMaxscore(int maxscore) {
 		this.maxscore = maxscore;
 	}
+	
 	public String getQtype() {
 		return qtype;
 	}
+	
 	public void setQtype(String qtype) {
 		this.qtype = qtype;
 	}
+	
 	public String getQtext() {
 		return qtext;
 	}
+	
 	public void setQtext(String qtext) {
 		this.qtext = qtext;
 	}
