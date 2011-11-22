@@ -1,10 +1,10 @@
-package org.digitalcampus.assessment;
+package org.digitalcampus.mquiz;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.digitalcampus.assessment.model.Quiz;
+import org.digitalcampus.mquiz.model.Quiz;
 
 import android.app.Activity;
 import android.util.Log;

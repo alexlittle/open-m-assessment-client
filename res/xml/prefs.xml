@@ -10,7 +10,8 @@
     	android:key="prefUsername"></EditTextPreference>
     <EditTextPreference 
     	android:title="@string/prefPassword" 
-    	android:key="prefPassword"></EditTextPreference>
+    	android:key="prefPassword"
+    	android:inputType="textPassword"></EditTextPreference>
     <PreferenceCategory
 		android:title="@string/prefsAdvanced">
 		<EditTextPreference 

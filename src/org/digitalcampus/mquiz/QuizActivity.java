@@ -1,6 +1,6 @@
-package org.digitalcampus.assessment;
+package org.digitalcampus.mquiz;
 
-import org.digitalcampus.assessment.model.*;
+import org.digitalcampus.mquiz.model.*;
 
 import android.app.Activity;
 import android.content.Context;

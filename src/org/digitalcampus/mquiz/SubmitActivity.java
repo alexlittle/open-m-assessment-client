@@ -1,4 +1,4 @@
-package org.digitalcampus.assessment;
+package org.digitalcampus.mquiz;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -15,7 +15,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.digitalcampus.assessment.model.DbHelper;
+import org.digitalcampus.mquiz.model.DbHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -143,7 +143,7 @@ public class SubmitActivity extends Activity {
 
         		json.put("responses", responses);
         		
-        		String url = prefs.getString("prefServer", "") + prefs.getString("prefServerSubmitPath", "");
+        		String url = prefs.getString("prefServer", getString(R.string.prefServerDefault)) + prefs.getString("prefServerSubmitPath", getString(R.string.prefServerSubmitPathDefault));
             	
             	Result r = new Result();
             	r.url = url;
@@ -155,10 +155,7 @@ public class SubmitActivity extends Activity {
         	} catch (Exception e){
         		e.printStackTrace();
         	}
-        	 
-        	
-        	
-        	
+      
         	counter++;
        	    cur.moveToNext();      	    
         }

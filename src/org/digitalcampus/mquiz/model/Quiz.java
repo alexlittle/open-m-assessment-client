@@ -1,10 +1,10 @@
-package org.digitalcampus.assessment.model;
+package org.digitalcampus.mquiz.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.digitalcampus.assessment.model.Question;
+import org.digitalcampus.mquiz.model.Question;
 
 public class Quiz implements Serializable{
 	

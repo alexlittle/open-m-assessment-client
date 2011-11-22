@@ -1,6 +1,6 @@
-package org.digitalcampus.assessment;
+package org.digitalcampus.mquiz;
 
-import org.digitalcampus.assessment.model.DbHelper;
+import org.digitalcampus.mquiz.model.DbHelper;
 
 import android.app.Activity;
 import android.content.Intent;

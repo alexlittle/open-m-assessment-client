@@ -1,4 +1,5 @@
-package org.digitalcampus.assessment;
+package org.digitalcampus.mquiz;
+
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;

@@ -1,4 +1,4 @@
-package org.digitalcampus.assessment.model;
+package org.digitalcampus.mquiz.model;
 
 import java.io.Serializable;
 

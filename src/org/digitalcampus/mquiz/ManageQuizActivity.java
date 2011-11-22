@@ -1,4 +1,4 @@
-package org.digitalcampus.assessment;
+package org.digitalcampus.mquiz;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -17,8 +17,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.digitalcampus.assessment.model.DbHelper;
-import org.digitalcampus.assessment.model.Quiz;
+import org.digitalcampus.mquiz.model.DbHelper;
+import org.digitalcampus.mquiz.model.Quiz;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,7 +84,7 @@ public class ManageQuizActivity extends ListActivity{
     	// send results as AsyncTask
         GetQuizListTask task = new GetQuizListTask();
         String[] url = new String[1];
-        url[0] = prefs.getString("prefServer", "")+prefs.getString("prefServerListPath", "");
+        url[0] = prefs.getString("prefServer", getString(R.string.prefServerDefault))+prefs.getString("prefServerListPath", getString(R.string.prefServerListPathDefault));
 		task.execute(url);
     }
     
