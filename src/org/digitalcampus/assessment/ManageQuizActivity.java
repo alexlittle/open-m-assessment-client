@@ -1,4 +1,4 @@
-package org.digitalcampus.mquiz;
+package org.digitalcampus.assessment;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

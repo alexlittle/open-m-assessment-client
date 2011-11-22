@@ -1,11 +1,11 @@
-package org.digitalcampus.mquiz;
+package org.digitalcampus.assessment;
+
 
 import org.digitalcampus.mquiz.model.DbHelper;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;

@@ -1,4 +1,4 @@
-package org.digitalcampus.mquiz;
+package org.digitalcampus.assessment;
 
 import java.util.ArrayList;
 import java.util.HashMap;

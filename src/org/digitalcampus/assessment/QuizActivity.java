@@ -1,4 +1,4 @@
-package org.digitalcampus.mquiz;
+package org.digitalcampus.assessment;
 
 import org.digitalcampus.mquiz.model.*;
 
