@@ -12,8 +12,7 @@
 	<EditText android:layout_width="fill_parent"
 				android:layout_height="wrap_content" android:gravity="left"
 				android:textSize="20sp" 
-				android:id="@+id/register_form_email_field"
-				android:text="alex@alexlittle.net"/>
+				android:id="@+id/register_form_email_field"/>
 	<TextView android:layout_width="fill_parent"
 				android:layout_height="wrap_content" android:gravity="left"
 				android:textSize="20sp" 
@@ -23,8 +22,7 @@
 				android:layout_height="wrap_content" android:gravity="left"
 				android:textSize="20sp" 
 				android:id="@+id/register_form_password_field"
-				android:inputType="textPassword"
-				android:text="123456"/>
+				android:inputType="textPassword"/>
 	<TextView android:layout_width="fill_parent"
 				android:layout_height="wrap_content" android:gravity="left"
 				android:textSize="20sp" 
@@ -34,8 +32,7 @@
 				android:layout_height="wrap_content" android:gravity="left"
 				android:textSize="20sp" 
 				android:id="@+id/register_form_password_again_field"
-				android:inputType="textPassword"
-				android:text="123456"/>/>
+				android:inputType="textPassword"/>
 	<TextView android:layout_width="fill_parent"
 				android:layout_height="wrap_content" android:gravity="left"
 				android:textSize="20sp" 
@@ -44,8 +41,7 @@
 	<EditText android:layout_width="fill_parent"
 				android:layout_height="wrap_content" android:gravity="left"
 				android:textSize="20sp" 
-				android:id="@+id/register_form_firstname_field"
-				android:text="123456"/>
+				android:id="@+id/register_form_firstname_field"/>
 	<TextView android:layout_width="fill_parent"
 				android:layout_height="wrap_content" android:gravity="left"
 				android:textSize="20sp" 
@@ -54,8 +50,7 @@
 	<EditText android:layout_width="fill_parent"
 				android:layout_height="wrap_content" android:gravity="left"
 				android:textSize="20sp" 
-				android:id="@+id/register_form_lastname_field"
-				android:text="123456"/>
+				android:id="@+id/register_form_lastname_field"/>
 	<Button android:id="@+id/register_btn"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
