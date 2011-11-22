@@ -219,6 +219,7 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
 	     });
 		builder.show();
     }
+    
     // Called first time user clicks on the menu button
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
