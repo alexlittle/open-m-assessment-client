@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+    <TextView android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:gravity="left"
+				android:textSize="20sp" 
+				android:id="@+id/register_form_email_title"
+				android:text="@string/register_form_email_title" />
+	<EditText android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:gravity="left"
+				android:textSize="20sp" 
+				android:id="@+id/register_form_email_field"/>
+	<TextView android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:gravity="left"
+				android:textSize="20sp" 
+				android:id="@+id/register_form_password_title"
+				android:text="@string/register_form_password_title" />
+	<EditText android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:gravity="left"
+				android:textSize="20sp" 
+				android:id="@+id/register_form_password_field"
+				android:inputType="textPassword"/>
+	<TextView android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:gravity="left"
+				android:textSize="20sp" 
+				android:id="@+id/register_form_password_again_title"
+				android:text="@string/register_form_password_again_title" />
+	<EditText android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:gravity="left"
+				android:textSize="20sp" 
+				android:id="@+id/register_form_password_again_field"
+				android:inputType="textPassword"/>
+	<TextView android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:gravity="left"
+				android:textSize="20sp" 
+				android:id="@+id/register_form_firstname_title"
+				android:text="@string/register_form_firstname_title" />
+	<EditText android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:gravity="left"
+				android:textSize="20sp" 
+				android:id="@+id/register_form_firstname_field"/>
+	<TextView android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:gravity="left"
+				android:textSize="20sp" 
+				android:id="@+id/register_form_lastname_title"
+				android:text="@string/register_form_lastname_title" />
+	<EditText android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:gravity="left"
+				android:textSize="20sp" 
+				android:id="@+id/register_form_lastname_field"/>
+	<Button android:id="@+id/register_btn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/register_btn_text" 
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:layout_margin="5dp" 
+            />
+</LinearLayout>

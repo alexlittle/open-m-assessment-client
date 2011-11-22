@@ -53,8 +53,8 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
         	}
         });
         
-        Button results = (Button) findViewById(R.id.results_btn);
-        results.setOnClickListener(new View.OnClickListener() {
+        Button resultsBtn = (Button) findViewById(R.id.results_btn);
+        resultsBtn.setOnClickListener(new View.OnClickListener() {
         	@Override
 			public void onClick(View arg0) {
         		Intent i = new Intent(AssessmentActivity.this, ResultsActivity.class);
@@ -72,6 +72,28 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
         	}
         });
         
+        Button registerBtn = (Button) findViewById(R.id.register_btn);
+        registerBtn.setOnClickListener(new View.OnClickListener() {
+        	@Override
+			public void onClick(View arg0) {
+        		Intent i = new Intent(AssessmentActivity.this, RegisterActivity.class);
+        		startActivity(i);
+        	}
+        });
+        
+        //check to see if username/password set
+        if(this.isLoggedIn()){
+        	takeQuizBtn.setVisibility(View.VISIBLE);
+        	manageQuizBtn.setVisibility(View.VISIBLE);
+        	resultsBtn.setVisibility(View.VISIBLE);
+        	submitBtn.setVisibility(View.VISIBLE);
+        } else {
+        	takeQuizBtn.setVisibility(View.GONE);
+        	manageQuizBtn.setVisibility(View.GONE);
+        	resultsBtn.setVisibility(View.GONE);
+        	submitBtn.setVisibility(View.GONE);
+        }
+        
     }
     
     protected void onStart(){
@@ -87,6 +109,10 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
         }
         
         submitBtn.setText(String.format(getString(R.string.submit_btn_text), noToSubmit)); 
+    }
+    
+    public boolean isLoggedIn(){
+    	return false;
     }
     
     // Called first time user clicks on the menu button

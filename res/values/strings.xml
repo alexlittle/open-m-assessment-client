@@ -1,21 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="about">mQuiz application from Digital Campus for more info visit: http://mquiz.org or http://digital-campus.org</string>
-	<string name="version">v1 (20 Nov 2011)</string>
-	<string name="title_about">About</string>
-	<string name="title_select_quiz">Select a quiz</string>
-	<string name="title_quiz">%1$s: Question %2$d of %3$d</string>
-	<string name="title_manage_quiz">Manage quizzes</string>
 	<string name="app_name">mQuiz</string>
-	<string name="main_menu_message">Digital Campus</string>
 	<string name="end_text">Congratulations, you\'ve completed the quiz</string>
 	<string name="endscore_text">You scored:</string>
+	<string name="main_menu_message">Digital Campus</string>
+	
+	<string name="register_form_email_title">Email address</string>
+	<string name="register_form_firstname_title">First name</string>
+	<string name="register_form_lastname_title">Last name</string>
+	<string name="register_form_password_title">Password</string>
+	<string name="register_form_password_again_title">Password (again)</string>
+	<string name="register_form_submit">Register now</string>
+	
+	<string name="title_about">About</string>
+	<string name="title_manage_quiz">Manage quizzes</string>
 	<string name="title_prefs">Preferences</string>
+	<string name="title_quiz">%1$s: Question %2$d of %3$d</string>
+	<string name="title_register">Register</string>
+	<string name="title_select_quiz">Select a quiz</string>
+	<string name="version">v1 (20 Nov 2011)</string>
+	
+
 	<string name="take_quiz_btn_text">Take a quiz</string>
 	<string name="manage_quiz_btn_text">Download quizzes</string>
 	<string name="list_quiz_btn_text">Download selected</string>
 	<string name="quiz_summary">Quiz Results</string>
 	<string name="quiz_attempts">Previous Attempts</string>
+	<string name="register_btn_text">Register for mQuiz</string>
 	<string name="results_btn_text">View Previous Scores</string>
 	<string name="submit_btn_text">Submit Quizzes (%1$d)</string>
 	<string name="clear_submitted_btn_text">Clear</string>
