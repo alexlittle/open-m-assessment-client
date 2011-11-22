@@ -4,7 +4,12 @@
 	<string name="app_name">mQuiz</string>
 	<string name="end_text">Congratulations, you\'ve completed the quiz</string>
 	<string name="endscore_text">You scored:</string>
+	
+	<string name="main_email_title">Email address</string>
+	<string name="main_login_btn_text">Login</string>
 	<string name="main_menu_message">Digital Campus</string>
+	<string name="main_password_title">Password</string>
+	<string name="main_unregistered">Before you can use mQuiz, please login or register:</string>
 	
 	<string name="register_form_email_title">Email address</string>
 	<string name="register_form_firstname_title">First name</string>

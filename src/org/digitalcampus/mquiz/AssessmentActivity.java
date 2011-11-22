@@ -1,28 +1,47 @@
 package org.digitalcampus.mquiz;
 
 import org.digitalcampus.mquiz.model.DbHelper;
+import org.apache.commons.validator.EmailValidator;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 public class AssessmentActivity extends Activity implements OnSharedPreferenceChangeListener{
 	
+	private final static String TAG = "AssessmentActivity";
 	private DbHelper dbHelper;
+	
+	private Button takeQuizBtn;
+	private Button resultsBtn;
 	private Button submitBtn;
+	private Button manageQuizBtn;
+	
+	private TextView unregisteredTV;
+	private TextView emailTitleTV;
+	private EditText emailField;
+	private TextView passwordTitleTV;
+	private EditText passwordField;
+	private Button loginBtn;
+	private Button registerBtn;
+		
 	SharedPreferences prefs;
 
-	
-	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,7 +53,7 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
        
         dbHelper = new DbHelper(this);
         
-        Button takeQuizBtn = (Button) findViewById(R.id.take_quiz_btn);
+        takeQuizBtn = (Button) findViewById(R.id.take_quiz_btn);
         takeQuizBtn.setOnClickListener(new View.OnClickListener() {
         	@Override
 			public void onClick(View arg0) {
@@ -43,7 +62,7 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
         	}
         });
         
-        Button manageQuizBtn = (Button) findViewById(R.id.manage_quiz_btn);
+       manageQuizBtn = (Button) findViewById(R.id.manage_quiz_btn);
         //manageQuizBtn.setEnabled(false);
         manageQuizBtn.setOnClickListener(new View.OnClickListener() {
         	@Override
@@ -53,7 +72,7 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
         	}
         });
         
-        Button resultsBtn = (Button) findViewById(R.id.results_btn);
+        resultsBtn = (Button) findViewById(R.id.results_btn);
         resultsBtn.setOnClickListener(new View.OnClickListener() {
         	@Override
 			public void onClick(View arg0) {
@@ -72,7 +91,13 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
         	}
         });
         
-        Button registerBtn = (Button) findViewById(R.id.register_btn);
+        unregisteredTV = (TextView) findViewById(R.id.main_unregistered);
+        emailTitleTV = (TextView) findViewById(R.id.main_email_title);
+        emailField = (EditText) findViewById(R.id.main_email_field);
+        passwordTitleTV = (TextView) findViewById(R.id.main_password_title);
+        passwordField = (EditText) findViewById(R.id.main_password_field);
+        
+        registerBtn = (Button) findViewById(R.id.register_btn);
         registerBtn.setOnClickListener(new View.OnClickListener() {
         	@Override
 			public void onClick(View arg0) {
@@ -81,18 +106,14 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
         	}
         });
         
-        //check to see if username/password set
-        if(this.isLoggedIn()){
-        	takeQuizBtn.setVisibility(View.VISIBLE);
-        	manageQuizBtn.setVisibility(View.VISIBLE);
-        	resultsBtn.setVisibility(View.VISIBLE);
-        	submitBtn.setVisibility(View.VISIBLE);
-        } else {
-        	takeQuizBtn.setVisibility(View.GONE);
-        	manageQuizBtn.setVisibility(View.GONE);
-        	resultsBtn.setVisibility(View.GONE);
-        	submitBtn.setVisibility(View.GONE);
-        }
+        loginBtn = (Button) findViewById(R.id.login_btn);
+        loginBtn.setOnClickListener(new View.OnClickListener() {
+        	@Override
+			public void onClick(View arg0) {
+        		AssessmentActivity.this.loginUser();
+        	}
+        });
+       
         
     }
     
@@ -109,12 +130,95 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
         }
         
         submitBtn.setText(String.format(getString(R.string.submit_btn_text), noToSubmit)); 
+       
+        //check to see if username/password set
+        this.setScreen();
+        
     }
     
-    public boolean isLoggedIn(){
-    	return false;
+    private boolean isLoggedIn(){
+    	String username = prefs.getString("prefUsername", "");
+    	if(username.equals("")){
+    		return false;
+    	} else {
+    		return true;
+    	}
     }
     
+    private void setScreen(){
+    	if(this.isLoggedIn()){
+        	takeQuizBtn.setVisibility(View.VISIBLE);
+        	manageQuizBtn.setVisibility(View.VISIBLE);
+        	resultsBtn.setVisibility(View.VISIBLE);
+        	submitBtn.setVisibility(View.VISIBLE);
+        	
+        	unregisteredTV.setVisibility(View.GONE);
+        	emailTitleTV.setVisibility(View.GONE);
+        	emailField.setVisibility(View.GONE);
+        	passwordTitleTV.setVisibility(View.GONE);
+        	passwordField.setVisibility(View.GONE);
+        	loginBtn.setVisibility(View.GONE);
+        	registerBtn.setVisibility(View.GONE);
+        	
+        } else {
+        	takeQuizBtn.setVisibility(View.GONE);
+        	manageQuizBtn.setVisibility(View.GONE);
+        	resultsBtn.setVisibility(View.GONE);
+        	submitBtn.setVisibility(View.GONE);
+        	
+        	unregisteredTV.setVisibility(View.VISIBLE);
+        	emailTitleTV.setVisibility(View.VISIBLE);
+        	emailField.setVisibility(View.VISIBLE);
+        	passwordTitleTV.setVisibility(View.VISIBLE);
+        	passwordField.setVisibility(View.VISIBLE);
+        	loginBtn.setVisibility(View.VISIBLE);
+        	registerBtn.setVisibility(View.VISIBLE);
+        }
+    }
+   
+    public void loginUser(){
+    	// get text from email
+    	String email = (String) emailField.getText().toString();
+    	//check valid email address format
+    	boolean isValidEmail = EmailValidator.getInstance().isValid(email);
+    	if(!isValidEmail){
+    		this.showAlert("Error","Please enter a valid email address format");
+    		return;
+    	}
+    	
+    	// get text from email
+    	String password = (String) passwordField.getText().toString();
+    	//check length
+    	if(password.length()<6){
+    		this.showAlert("Error","You password should be 6 characters or more");
+    		return;
+    	}
+    	
+    	// set the preferences
+    	Editor editor = prefs.edit();
+    	editor.putString("prefUsername", email);
+    	editor.putString("prefPassword", password);
+    	editor.commit();
+    	
+    	// set to normal main screen
+    	this.setScreen();
+    }
+    
+    
+    private void showAlert(String title, String msg){
+    	AlertDialog.Builder builder = new AlertDialog.Builder(AssessmentActivity.this);
+		builder.setTitle(title);
+		builder.setMessage(msg);
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+	     });
+		builder.show();
+    }
     // Called first time user clicks on the menu button
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -138,7 +242,6 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
     }
 
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-    	
     }
 
 }
