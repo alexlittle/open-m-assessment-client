@@ -245,9 +245,7 @@ public class SubmitActivity extends Activity {
 						dbHelper = new DbHelper(SubmitActivity.this);
 						dbHelper.setSubmitted(r.rowId);
 						dbHelper.close();
-					} else {
-						response = "failed";
-					}
+					} 
 					
 					String str = "Result "+String.valueOf(counter) + ": " + response;
 					toRet.add(str);

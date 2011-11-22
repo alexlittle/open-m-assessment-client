@@ -141,7 +141,7 @@ public class ManageQuizActivity extends ListActivity{
 					
     			} catch (Exception e) {
     				e.printStackTrace();
-					toRet = "Error connecting to network";
+					toRet = "Connection error or invalid response from server";
 				}
 			}
 			return toRet;
@@ -156,7 +156,7 @@ public class ManageQuizActivity extends ListActivity{
 				parseResponse(response);
 			} catch (JSONException e){
 				Log.d(TAG,response);
-				showErrorAlert("Connection error or invalid response from server");
+				showErrorAlert(response);
 				e.printStackTrace();
 			}
 			
@@ -323,7 +323,7 @@ public class ManageQuizActivity extends ListActivity{
 	    				new JSONObject(response);
 	    				dr.responseObj = response;
 	    			} catch (JSONException e){
-	    				dr.responseObj = "Error in server response";
+	    				dr.responseObj = response;
 	    			}
 					
 					toRet.add(dr);
@@ -332,7 +332,7 @@ public class ManageQuizActivity extends ListActivity{
     				e.printStackTrace();
     				DownloadResult dr = new DownloadResult();
 					dr.name	= u.getTitle();
-					dr.responseObj = "Error connecting to network";
+					dr.responseObj = "Connection error or invalid response from server";
 					toRet.add(dr);
 				}
 			}
