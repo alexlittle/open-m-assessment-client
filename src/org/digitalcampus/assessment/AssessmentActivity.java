@@ -53,6 +53,8 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
        
         dbHelper = new DbHelper(this);
         
+        setDefaultPrefs();
+        
         takeQuizBtn = (Button) findViewById(R.id.take_quiz_btn);
         takeQuizBtn.setOnClickListener(new View.OnClickListener() {
         	@Override
@@ -245,4 +247,13 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
     }
 
+    private void setDefaultPrefs(){
+    	Editor editor = prefs.edit();
+    	editor.putString("prefServer", getString(R.string.prefServerDefault));
+    	editor.putString("prefUsername", "");
+    	editor.putString("prefPassword", "");
+    	editor.putString("prefServerListPath", getString(R.string.prefServerListPathDefault));
+    	editor.putString("prefServerSubmitPath", getString(R.string.prefServerSubmitPathDefault));
+    	editor.commit();
+    }
 }

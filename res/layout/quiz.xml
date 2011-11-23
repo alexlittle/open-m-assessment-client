@@ -45,7 +45,7 @@
 			android:layout_height="50dp" 
 			android:layout_width="wrap_content"
 			android:layout_weight=".5" 
-			android:text="@string/previous"
+			android:text="@string/quiz_previous"
 			android:textSize="20dp" android:textStyle="bold"
 			android:layout_alignParentLeft="true"
 			/>
@@ -53,7 +53,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="50dp"
 			android:layout_weight=".5" 
-			android:text="@string/next"
+			android:text="@string/quiz_next"
 			android:textSize="20dp" android:textStyle="bold"
 			android:layout_alignParentRight="true"
 			/>

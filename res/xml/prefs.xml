@@ -13,7 +13,7 @@
     	android:key="prefPassword"
     	android:inputType="textPassword"></EditTextPreference>
     <PreferenceCategory
-		android:title="@string/prefsAdvanced">
+		android:title="@string/prefAdvanced">
 		<EditTextPreference 
 	    	android:title="@string/prefServerTimeoutConnection" 
 	    	android:key="prefServerTimeoutConnection"

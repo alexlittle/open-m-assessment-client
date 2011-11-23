@@ -48,6 +48,16 @@ public class QuizActivityEnd extends Activity {
         		startActivity(i);
         	}
         });
+        
+        Button submitBtn = (Button) findViewById(R.id.quiz_end_submit_btn);
+        takeAnotherBtn.setOnClickListener(new View.OnClickListener() {
+        	@Override
+			public void onClick(View arg0) {
+        		Intent i = new Intent(QuizActivityEnd.this, SubmitActivity.class);
+        		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        		startActivity(i);
+        	}
+        });
     }
    
     

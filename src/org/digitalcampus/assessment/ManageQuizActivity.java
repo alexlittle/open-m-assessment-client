@@ -85,7 +85,9 @@ public class ManageQuizActivity extends ListActivity{
         GetQuizListTask task = new GetQuizListTask();
         String[] url = new String[1];
         url[0] = prefs.getString("prefServer", getString(R.string.prefServerDefault))+prefs.getString("prefServerListPath", getString(R.string.prefServerListPathDefault));
-		task.execute(url);
+		Log.d(TAG,getString(R.string.prefServerDefault));
+		Log.d(TAG,getString(R.string.prefServerListPathDefault));
+        task.execute(url);
     }
     
     
@@ -117,6 +119,7 @@ public class ManageQuizActivity extends ListActivity{
     			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 
     			DefaultHttpClient client = new DefaultHttpClient(httpParameters);
+    			Log.d(TAG,u);
     			HttpPost httpPost = new HttpPost(u);
     			try {
     				// add post params

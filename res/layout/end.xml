@@ -26,14 +26,20 @@
 		android:textSize="60sp"
 		android:layout_margin="10dp" 
 		android:id="@+id/score_text"/>
-		
-	<Button android:id="@+id/take_another_quiz_btn"
+	
+	<Button android:id="@+id/quiz_end_submit_btn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/quiz_end_submit_btn_text" 
+            android:textSize="20dp"
+            android:textStyle="bold" 
+            android:layout_margin="5dp"/>
+            
+    <Button android:id="@+id/take_another_quiz_btn"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/take_another_quiz_btn_text" 
             android:textSize="20dp"
             android:textStyle="bold" 
-            android:layout_margin="5dp"
-            />
-	
+            android:layout_margin="5dp"/>
 </LinearLayout>

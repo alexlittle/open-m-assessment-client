@@ -34,7 +34,8 @@
 	<string name="quiz_attempts">Previous Attempts</string>
 	<string name="register_btn_text">Register for mQuiz</string>
 	<string name="results_btn_text">View Previous Scores</string>
-	<string name="submit_btn_text">Submit Quizzes (%1$d)</string>
+	<string name="submit_btn_text">Submit Quiz Results (%1$d)</string>
+	<string name="quiz_end_submit_btn_text">Submit Quiz Results</string>
 	<string name="clear_submitted_btn_text">Clear</string>
 	<string name="submit_activity_label">Submit Quiz Results</string>
 	<string name="submitnow_btn_text">Submit now</string>
@@ -47,20 +48,15 @@
 	<string name="submitting">Sending quiz results %1$d of %2$d: %3$s\n</string>
 	<string name="submitted">Successfully sent %1$d of %2$d quiz results\n</string>
 
-	<string name="previous">&lt;&lt; Prev</string>
-	<string name="next">Next &gt;&gt;</string>
-	<string name="mark">Get answer</string>
-	<string name="end">Get results &gt;&gt;</string>
-	
-	<string name="correct">Correct, Well done!</string>
-	<string name="wrong">Sorry, that\'s not right, try again.</string>
-
+	<string name="quiz_previous">&lt;&lt; Prev</string>
+	<string name="quiz_next">Next &gt;&gt;</string>
+	<string name="quiz_end">Get results &gt;&gt;</string>
 
 	<string name="prefServer">Server</string>
-	<string name="prefUsername">Username</string>
+	<string name="prefUsername">Email</string>
 	<string name="prefPassword">Password</string>
 	<string name="prefServerDefault">http://mquiz.org/</string>
-	<string name="prefsAdvanced">Advanced preferences</string>
+	<string name="prefAdvanced">Advanced preferences</string>
 	<string name="prefServerTimeoutConnection">Connection timeout</string>
 	<string name="prefServerTimeoutConnectionDefault">10000</string>
 	<string name="prefServerTimeoutResponse">Response timeout</string>

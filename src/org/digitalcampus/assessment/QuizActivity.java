@@ -128,9 +128,9 @@ public class QuizActivity extends Activity {
     	}
     	
     	if (!quiz.hasNext()){
-    		nextBtn.setText(R.string.end);
+    		nextBtn.setText(R.string.quiz_end);
     	} else {
-    		nextBtn.setText(R.string.next);
+    		nextBtn.setText(R.string.quiz_next);
     	}
     	if (!quiz.hasPrevious()){
     		prevBtn.setEnabled(false);
