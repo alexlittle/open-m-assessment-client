@@ -248,12 +248,14 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
     }
 
     private void setDefaultPrefs(){
-    	Editor editor = prefs.edit();
-    	editor.putString("prefServer", getString(R.string.prefServerDefault));
-    	editor.putString("prefUsername", "");
-    	editor.putString("prefPassword", "");
-    	editor.putString("prefServerListPath", getString(R.string.prefServerListPathDefault));
-    	editor.putString("prefServerSubmitPath", getString(R.string.prefServerSubmitPathDefault));
-    	editor.commit();
+    	if(!isLoggedIn()){
+	    	Editor editor = prefs.edit();
+	    	editor.putString("prefServer", getString(R.string.prefServerDefault));
+	    	editor.putString("prefUsername", "");
+	    	editor.putString("prefPassword", "");
+	    	editor.putString("prefServerListPath", getString(R.string.prefServerListPathDefault));
+	    	editor.putString("prefServerSubmitPath", getString(R.string.prefServerSubmitPathDefault));
+	    	editor.commit();
+    	}
     }
 }

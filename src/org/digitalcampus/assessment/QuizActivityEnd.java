@@ -50,7 +50,7 @@ public class QuizActivityEnd extends Activity {
         });
         
         Button submitBtn = (Button) findViewById(R.id.quiz_end_submit_btn);
-        takeAnotherBtn.setOnClickListener(new View.OnClickListener() {
+        submitBtn.setOnClickListener(new View.OnClickListener() {
         	@Override
 			public void onClick(View arg0) {
         		Intent i = new Intent(QuizActivityEnd.this, SubmitActivity.class);
