@@ -15,7 +15,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.digitalcampus.assessment.ManageQuizActivity;
 import org.digitalcampus.mquiz.model.DbHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,14 +23,12 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class DownloadQuizTask extends AsyncTask<APIRequest, String, List<String>>{
+public class QuizDownloadedTask extends AsyncTask<APIRequest, String, List<String>>{
+
+	private final static String TAG = "QuizDownloadedTask";
 	
-	private final static String TAG = "DownloadQuizTask";
-	private APIRequest currentRequest;
-	private Context myCtx;
+	public QuizDownloadedTask(Context ctx){
 	
-	public DownloadQuizTask(Context ctx){
-		myCtx = ctx;
 	}
 	
 	@Override
@@ -40,7 +37,6 @@ public class DownloadQuizTask extends AsyncTask<APIRequest, String, List<String>
 		List<String> toRet = new ArrayList<String>();
 		
 		for (APIRequest apir : apirs) {
-			currentRequest = apir;
 			String response = "";
 			
 			HttpParams httpParameters = new BasicHttpParams();
@@ -49,10 +45,7 @@ public class DownloadQuizTask extends AsyncTask<APIRequest, String, List<String>
 			DefaultHttpClient client = new DefaultHttpClient(httpParameters);
 			
 			HttpPost httpPost = new HttpPost(apir.fullurl);
-			try {
-				String msg = "Downloading '" + apir.fullurl + "'";
-				publishProgress(msg);
-				
+			try {				
 				// add post params
 				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 				nameValuePairs.add(new BasicNameValuePair("username", apir.username));
@@ -69,36 +62,12 @@ public class DownloadQuizTask extends AsyncTask<APIRequest, String, List<String>
 				while ((s = buffer.readLine()) != null) {
 					response += s;
 				}
-				
-				//DownloadResult dr = new DownloadResult();
-				//dr.name	= u.getTitle();
-				try {
-					Log.d(TAG,response);
-					JSONObject json = new JSONObject(response);
-					DbHelper dbHelper = new DbHelper(myCtx);
-    				dbHelper.insertQuiz(json);
-    				dbHelper.close();
-    				// now log quiz as having being downloaded
-    				String quizRefId = (String) json.get("refid");
-    				APIRequest[] dlQuizzes = new APIRequest[1]; 
-    				APIRequest dlQuiz = currentRequest.clone();
-    				dlQuiz.fullurl = currentRequest.baseurl + "api/?method=downloaded&quizref="+ quizRefId;
-    				dlQuizzes[0] = dlQuiz;	
-    				QuizDownloadedTask task = new QuizDownloadedTask(myCtx);
-    	     		task.execute(dlQuizzes);
-    	     		
-    			} catch (JSONException e){
-    				//dr.responseObj = response;
-    			}
-				
-				//toRet.add(dr);
+
+				Log.d(TAG,response);
 				
 			} catch (Exception e) {
 				e.printStackTrace();
-				//DownloadResult dr = new DownloadResult();
-				//dr.name	= u.getTitle();
-				//dr.responseObj = "Connection error or invalid response from server";
-				//toRet.add(dr);
+				Log.d(TAG, "Connection error or invalid response from server");
 			}
 		}
 		return toRet;

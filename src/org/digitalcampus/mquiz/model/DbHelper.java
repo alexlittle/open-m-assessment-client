@@ -1,5 +1,9 @@
 package org.digitalcampus.mquiz.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,7 +19,12 @@ import android.util.Log;
 public class DbHelper extends SQLiteOpenHelper{
 	static final String TAG = "DbHelper";
 	static final String DB_NAME = "assessment.db"; 
-	static final int DB_VERSION = 15; 
+	static final int DB_VERSION = 18; 
+	
+	public static final String PROPS_TABLE = "Settings";
+	public static final String PROPS_C_ID = BaseColumns._ID;
+	public static final String PROPS_C_NAME = "propname";
+	public static final String PROPS_C_VALUE = "propvalue";
 	
 	// Quiz Table
 	public static final String QUIZ_TABLE = "Quiz";
@@ -78,6 +87,14 @@ public class DbHelper extends SQLiteOpenHelper{
 	// Called only once, first time the DB is created
 	@Override
 	public void onCreate(SQLiteDatabase db) {
+		
+		// create Settings Table
+		String s_sql = "create table " + PROPS_TABLE + " (" + 
+								PROPS_C_ID + " integer primary key autoincrement, " + 
+								PROPS_C_NAME + " text, " + 
+								PROPS_C_VALUE + " text)"; 
+		db.execSQL(s_sql);
+		Log.d(TAG, "Quiz sql: " + s_sql);
 		// create Quiz Table
 		String q_sql = "create table " + QUIZ_TABLE + " (" + 
 								QUIZ_C_ID + " integer primary key autoincrement, " + 
@@ -143,6 +160,10 @@ public class DbHelper extends SQLiteOpenHelper{
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) { //
 	// Typically do ALTER TABLE statements, but...we're just in development,
 	// so:
+		
+		// drop Props table
+		db.execSQL("drop table if exists " + PROPS_TABLE);
+				
 		// drop Quiz table
 		db.execSQL("drop table if exists " + QUIZ_TABLE);
 		
@@ -295,7 +316,6 @@ public class DbHelper extends SQLiteOpenHelper{
 				db.insertOrThrow(DbHelper.QUIZ_QUESTION_TABLE, null, qvalues);
 				
 				JSONArray responses = (JSONArray) q.get("r");
-				Log.d(TAG, "No responses: " +String.valueOf(responses.length()));
 				for (int j=0; j<responses.length(); j++){
 					JSONObject r = (JSONObject) responses.get(j);
 					String responseRefId = (String) r.get("refid");
@@ -331,4 +351,41 @@ public class DbHelper extends SQLiteOpenHelper{
 		db.insertOrThrow(DbHelper.QUIZ_ATTEMPT_RESPONSE_TABLE, null, cVals);
 	}
 
+	public boolean runAutoDownload(){
+		boolean resp = true;
+		String criteria = DbHelper.PROPS_C_NAME + "='lastautodownload'";
+		Cursor cur = db.query(DbHelper.PROPS_TABLE, null, criteria , null, null, null, null);
+		
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date dnow = new Date();
+		
+		cur.moveToFirst();
+		while (cur.isAfterLast() == false) {
+			try{
+				Date lastdl = df.parse(cur.getString(cur.getColumnIndex(PROPS_C_VALUE)));
+				Long lastdltime = lastdl.getTime();
+				lastdltime +=(2*60*60*1000);
+				if(dnow.getTime() < lastdltime){
+					resp= false;
+				}
+				
+			} catch (ParseException pe){
+				pe.printStackTrace();
+			}
+			cur.moveToNext();
+			
+		}
+		if (resp){
+			//add record to prop
+			ContentValues rvalues = new ContentValues();
+			rvalues.put(DbHelper.PROPS_C_NAME, "lastautodownload");
+			rvalues.put(DbHelper.PROPS_C_VALUE, df.format(dnow));
+			db.insertOrThrow(DbHelper.PROPS_TABLE, null, rvalues);
+			Log.d(TAG, "running download");
+		} else {
+			Log.d(TAG, "download not ready");
+		}
+		return resp;
+	}
+	
 }

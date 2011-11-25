@@ -35,14 +35,6 @@ public class QuizAdapter extends SimpleAdapter{
 			q.setChecked(false);
 			checkedQuizzes.put(d.get("id"), q);
 		}
-		
-	
-		//Collection<Boolean> c = checkedQuizzes.values();
-		Iterator<String> itr = checkedQuizzes.keySet().iterator();
-		
-		while(itr.hasNext()){
-			Log.d(TAG,itr.next());
-		}
 	}
 	
 	static class ViewHolder {

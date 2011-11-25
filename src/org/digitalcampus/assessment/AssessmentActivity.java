@@ -2,6 +2,7 @@ package org.digitalcampus.assessment;
 
 import org.digitalcampus.mquiz.model.DbHelper;
 import org.digitalcampus.mquiz.tasks.APIRequest;
+import org.digitalcampus.mquiz.tasks.DownloadQueueTask;
 import org.apache.commons.validator.EmailValidator;
 
 import android.app.Activity;
@@ -138,16 +139,22 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
         //check to see if username/password set
         this.setScreen();
         
+        DbHelper dbHelper = new DbHelper(AssessmentActivity.this);
+        boolean runDownload = dbHelper.runAutoDownload();
+        dbHelper.close();
         // check to see if any quizzes are waiting to be downloaded
-        if(this.isLoggedIn()){
+        if(this.isLoggedIn() && runDownload){
         	APIRequest[] req = new APIRequest[1];
         	APIRequest apiR = new APIRequest(); 
-        	apiR.url =  prefs.getString("prefServer", getString(R.string.prefServerDefault))+"api/?method=downloadqueue";
+        	apiR.baseurl =  prefs.getString("prefServer", getString(R.string.prefServerDefault));
+        	apiR.fullurl =  prefs.getString("prefServer", getString(R.string.prefServerDefault))+"api/?method=downloadqueue";
         	apiR.username = prefs.getString("prefUsername", "");
         	apiR.password = prefs.getString("prefPassword", "");
         	apiR.timeoutConnection = Integer.parseInt(prefs.getString("prefServerTimeoutConnection", "10000"));
         	apiR.timeoutSocket = Integer.parseInt(prefs.getString("prefServerTimeoutConnection", "10000"));
         	req[0] = apiR;
+        	DownloadQueueTask task = new DownloadQueueTask(AssessmentActivity.this);
+     		task.execute(req);
         }
         
     }

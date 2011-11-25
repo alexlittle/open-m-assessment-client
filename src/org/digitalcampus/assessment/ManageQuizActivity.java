@@ -19,6 +19,8 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.digitalcampus.mquiz.model.DbHelper;
 import org.digitalcampus.mquiz.model.Quiz;
+import org.digitalcampus.mquiz.tasks.APIRequest;
+import org.digitalcampus.mquiz.tasks.QuizDownloadedTask;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -85,8 +87,6 @@ public class ManageQuizActivity extends ListActivity{
         GetQuizListTask task = new GetQuizListTask();
         String[] url = new String[1];
         url[0] = prefs.getString("prefServer", getString(R.string.prefServerDefault))+prefs.getString("prefServerListPath", getString(R.string.prefServerListPathDefault));
-		Log.d(TAG,getString(R.string.prefServerDefault));
-		Log.d(TAG,getString(R.string.prefServerListPathDefault));
         task.execute(url);
     }
     
@@ -289,7 +289,7 @@ public class ManageQuizActivity extends ListActivity{
     			HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
     			int timeoutSocket = 10000;
     			try {
-    				timeoutSocket= Integer.parseInt(prefs.getString("prefServerTimeoutConnection", "10000"));
+    				timeoutSocket= Integer.parseInt(prefs.getString("prefServerTimeoutResponse", "10000"));
     			} catch (NumberFormatException e){
     				// do nothing - will remain as default as above
     				e.printStackTrace();
@@ -362,8 +362,20 @@ public class ManageQuizActivity extends ListActivity{
     				// add to database
     				DbHelper dbHelper = new DbHelper(ManageQuizActivity.this);
     				boolean loaded = dbHelper.insertQuiz(json);
+    				dbHelper.close();
     				if (loaded){
     					t += s.name+ ": successfully downloaded\n";
+    					APIRequest[] dlQuizzes = new APIRequest[1]; 
+        				APIRequest dlQuiz = new APIRequest();
+        				String quizRefId = (String) json.get("refid");
+        				dlQuiz.fullurl = prefs.getString("prefServer", "") + "api/?method=downloaded&quizref="+ quizRefId;
+        				dlQuiz.username = prefs.getString("prefUsername", "");
+        				dlQuiz.password = prefs.getString("prefPassword", "");
+        				dlQuiz.timeoutConnection = Integer.parseInt(prefs.getString("prefServerTimeoutConnection", "10000"));
+        				dlQuiz.timeoutSocket= Integer.parseInt(prefs.getString("prefServerTimeoutResponse", "10000"));
+        				dlQuizzes[0] = dlQuiz;	
+        				QuizDownloadedTask task = new QuizDownloadedTask(ManageQuizActivity.this);
+        	     		task.execute(dlQuizzes);
     				} else {
     					t += s.name+ ": error parsing quiz\n";
     				}

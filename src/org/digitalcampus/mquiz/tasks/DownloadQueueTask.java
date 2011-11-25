@@ -17,13 +17,21 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
 public class DownloadQueueTask extends AsyncTask<APIRequest, String, String>{
 	
 	private final static String TAG = "DownloadQueueTask";
+	private APIRequest currentRequest;
+	private Context myCtx;
+	
+	public DownloadQueueTask(Context ctx){
+		myCtx = ctx;
+	}
 	
 	@Override
 	protected String doInBackground(APIRequest... apirs){
@@ -31,6 +39,7 @@ public class DownloadQueueTask extends AsyncTask<APIRequest, String, String>{
 		
 		String toRet = "";
 		for (APIRequest apir : apirs) {
+			currentRequest = apir;
 			String response = "";
 			
 			HttpParams httpParameters = new BasicHttpParams();
@@ -38,8 +47,8 @@ public class DownloadQueueTask extends AsyncTask<APIRequest, String, String>{
 			HttpConnectionParams.setSoTimeout(httpParameters, apir.timeoutSocket);
 			DefaultHttpClient client = new DefaultHttpClient(httpParameters);
 			
-			Log.d(TAG,apir.url);
-			HttpPost httpPost = new HttpPost(apir.url);
+			Log.d(TAG,apir.fullurl);
+			HttpPost httpPost = new HttpPost(apir.fullurl);
 			try {
 				// add post params
 				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
@@ -56,7 +65,6 @@ public class DownloadQueueTask extends AsyncTask<APIRequest, String, String>{
 				String s = "";
 				while ((s = buffer.readLine()) != null) {
 					response += s;
-					Log.d(TAG,s);
 				}
 				
 				toRet = response;
@@ -74,11 +82,21 @@ public class DownloadQueueTask extends AsyncTask<APIRequest, String, String>{
 
 		try {
 			Log.d(TAG,response);
-			new JSONArray(response);
-			//parseResponse(response);
+			JSONArray json = new JSONArray(response);
+			APIRequest[] dlQuizzes = new APIRequest[json.length()]; 
 			//for each quiz in queue download it
+			for(int i=0;i<(json.length());i++){
+				JSONObject json_obj=json.getJSONObject(i);
+				APIRequest dlQuiz = currentRequest.clone();
+				dlQuiz.fullurl = currentRequest.baseurl + "list/getquiz.php?ref="+ json_obj.getString("quizref");
+				dlQuizzes[i] = dlQuiz;	
+			}
+			
+			DownloadQuizTask task = new DownloadQuizTask(myCtx);
+     		task.execute(dlQuizzes);
+			
 		} catch (JSONException e){
-			Log.d(TAG,response);
+			Log.d(TAG,"Error parsing returned JSON");
 			e.printStackTrace();
 		}
 		
