@@ -294,7 +294,7 @@ public class DbHelper extends SQLiteOpenHelper{
 			
 			// load questions and add
 			JSONArray questions = (JSONArray) json.get("q");
-			Log.d(TAG, "No questions: " +String.valueOf(questions.length()));
+			
 			for (int i=0; i<questions.length(); i++){
 				JSONObject q = (JSONObject) questions.get(i);
 				String questionRefId = (String) q.get("refid");
@@ -381,10 +381,7 @@ public class DbHelper extends SQLiteOpenHelper{
 			rvalues.put(DbHelper.PROPS_C_NAME, "lastautodownload");
 			rvalues.put(DbHelper.PROPS_C_VALUE, df.format(dnow));
 			db.insertOrThrow(DbHelper.PROPS_TABLE, null, rvalues);
-			Log.d(TAG, "running download");
-		} else {
-			Log.d(TAG, "download not ready");
-		}
+		} 
 		return resp;
 	}
 	
