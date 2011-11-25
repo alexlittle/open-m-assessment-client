@@ -1,6 +1,7 @@
 package org.digitalcampus.assessment;
 
 import org.digitalcampus.mquiz.model.DbHelper;
+import org.digitalcampus.mquiz.tasks.APIRequest;
 import org.apache.commons.validator.EmailValidator;
 
 import android.app.Activity;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 public class AssessmentActivity extends Activity implements OnSharedPreferenceChangeListener{
 	
 	private final static String TAG = "AssessmentActivity";
+	
 	private DbHelper dbHelper;
 	
 	private Button takeQuizBtn;
@@ -135,6 +137,18 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
        
         //check to see if username/password set
         this.setScreen();
+        
+        // check to see if any quizzes are waiting to be downloaded
+        if(this.isLoggedIn()){
+        	APIRequest[] req = new APIRequest[1];
+        	APIRequest apiR = new APIRequest(); 
+        	apiR.url =  prefs.getString("prefServer", getString(R.string.prefServerDefault))+"api/?method=downloadqueue";
+        	apiR.username = prefs.getString("prefUsername", "");
+        	apiR.password = prefs.getString("prefPassword", "");
+        	apiR.timeoutConnection = Integer.parseInt(prefs.getString("prefServerTimeoutConnection", "10000"));
+        	apiR.timeoutSocket = Integer.parseInt(prefs.getString("prefServerTimeoutConnection", "10000"));
+        	req[0] = apiR;
+        }
         
     }
     
