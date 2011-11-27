@@ -1,12 +1,17 @@
 package org.digitalcampus.assessment;
 
+import org.apache.commons.validator.EmailValidator;
+import org.digitalcampus.mquiz.listeners.SubmitResultsListener;
 import org.digitalcampus.mquiz.model.DbHelper;
 import org.digitalcampus.mquiz.tasks.APIRequest;
 import org.digitalcampus.mquiz.tasks.DownloadQueueTask;
-import org.apache.commons.validator.EmailValidator;
+import org.digitalcampus.mquiz.tasks.SubmitResultsTask;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,7 +29,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class AssessmentActivity extends Activity implements OnSharedPreferenceChangeListener{
+public class AssessmentActivity extends Activity implements OnSharedPreferenceChangeListener, SubmitResultsListener{
 	
 	private final static String TAG = "AssessmentActivity";
 	
@@ -40,7 +45,9 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
 	private EditText passwordField;
 	private Button loginBtn;
 	private Button registerBtn;
-		
+	
+	private ProgressDialog pDialog;
+	
 	SharedPreferences prefs;
 
     /** Called when the activity is first created. */
@@ -86,8 +93,8 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
         submitBtn.setOnClickListener(new View.OnClickListener() {
         	@Override
 			public void onClick(View arg0) {
-        		Intent i = new Intent(AssessmentActivity.this, SubmitActivity.class);
-        		startActivity(i);
+        		//submit results...
+        		sendResults();
         	}
         });
         
@@ -262,4 +269,120 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
     }
 
+    public void sendResults(){
+		DbHelper dbHelper = new DbHelper(this);
+		Cursor cur = dbHelper.getUnsubmitted();
+		int noToSubmit = cur.getCount();
+
+		if(noToSubmit == 0){
+			return;
+		}
+		// show progress dialog
+        pDialog = new ProgressDialog(this);
+        pDialog.setTitle("Sending");
+        pDialog.setMessage("Sending results...");
+        pDialog.setCancelable(true);
+        pDialog.show();
+        
+		// set up counter and array to pass to AsyncTask
+		int counter = 0;
+		APIRequest[] resultsToSend = new APIRequest[noToSubmit];
+
+		// set up array of records to send
+		cur.moveToFirst();
+		while (cur.isAfterLast() == false) {
+			try {
+				JSONObject json = new JSONObject();
+				// general quiz overview
+				json.put("username", cur.getString(cur
+						.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_USERNAME)));
+				json.put("quizid", cur.getString(cur
+						.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_QUIZREFID)));
+				json.put("quizdate", cur.getString(cur
+						.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_QUIZDATE)));
+				json.put("userscore", cur.getString(cur
+						.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_USERSCORE)));
+				json.put("maxscore", cur.getString(cur
+						.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_MAXSCORE)));
+
+				// individual quiz responses
+				JSONArray responses = new JSONArray();
+				Cursor attCur = dbHelper.getAttemptResponses(cur.getInt(cur
+						.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_ID)));
+				attCur.moveToFirst();
+				while (attCur.isAfterLast() == false) {
+					JSONObject r = new JSONObject();
+					r.put("qid",
+							attCur.getString(attCur
+									.getColumnIndex(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_QUESTIONREFID)));
+					r.put("qrid",
+							attCur.getString(attCur
+									.getColumnIndex(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_RESPONSEREFID)));
+					r.put("score",
+							attCur.getFloat(attCur
+									.getColumnIndex(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_SCORE)));
+					responses.put(r);
+					attCur.moveToNext();
+				}
+
+				json.put("responses", responses);
+
+				APIRequest r = new APIRequest();
+				r.fullurl = prefs.getString("prefServer",
+						getString(R.string.prefServerDefault)) + "submit/";
+				r.rowId = cur.getInt(cur
+						.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_ID));
+				r.username = prefs.getString("prefUsername", "");
+				r.password = prefs.getString("prefPassword", "");
+				r.timeoutConnection = Integer.parseInt(prefs.getString(
+						"prefServerTimeoutConnection", "10000"));
+				r.timeoutSocket = Integer.parseInt(prefs.getString(
+						"prefServerTimeoutResponse", "10000"));
+				r.content = json.toString();
+				resultsToSend[counter] = r;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			counter++;
+			cur.moveToNext();
+		}
+		cur.close();
+		dbHelper.close();
+
+		// send results as AsyncTask
+		SubmitResultsTask task = new SubmitResultsTask(this);
+		task.setDownloaderListener(this);
+		task.execute(resultsToSend);
+    }
+
+    @Override
+	public void submitResultsComplete(String msg) {
+		// TODO Auto-generated method stub
+    	Log.d(TAG,"submit results completed....");
+    	pDialog.setMessage(msg);
+		pDialog.dismiss();
+    	
+    	DbHelper dbHelper = new DbHelper(AssessmentActivity.this);
+    	
+    	Cursor cur = dbHelper.getUnsubmitted();
+        int noToSubmit = cur.getCount();
+        cur.close();
+        dbHelper.close();
+        
+        if(noToSubmit == 0){
+        	submitBtn.setEnabled(false);
+        } else {
+        	submitBtn.setEnabled(true);
+        }
+        
+        submitBtn.setText(String.format(getString(R.string.submit_btn_text), noToSubmit)); 
+	}
+
+
+	@Override
+	public void progressUpdate(String msg) {
+		Log.d(TAG,"progress update....");
+		pDialog.setMessage(msg);
+	}
 }

@@ -1,24 +1,39 @@
 package org.digitalcampus.assessment;
 
-import org.digitalcampus.mquiz.model.*;
+import org.digitalcampus.mquiz.listeners.SubmitResultsListener;
+import org.digitalcampus.mquiz.model.DbHelper;
+import org.digitalcampus.mquiz.model.Question;
+import org.digitalcampus.mquiz.model.Quiz;
+import org.digitalcampus.mquiz.model.Response;
+import org.digitalcampus.mquiz.tasks.APIRequest;
+import org.digitalcampus.mquiz.tasks.SubmitResultsTask;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class QuizActivityEnd extends Activity {
+public class QuizActivityEnd extends Activity implements SubmitResultsListener{
 	
 	static final String TAG = "TestActivityEnd";
 	private Quiz quiz;
 	
-	DbHelper dbHelper;
-	SharedPreferences prefs;
+	private DbHelper dbHelper;
+	private SharedPreferences prefs;
+	private Long attemptId;
+	private ProgressDialog pDialog;
+	private Button submitBtn;
 	
     /** Called when the activity is first created. */
     @Override
@@ -35,7 +50,6 @@ public class QuizActivityEnd extends Activity {
         	quiz = (Quiz) b.getSerializable("quiz");
         	float s = quiz.getUserscore()*100/quiz.getMaxscore();
         	scoreText.setText(String.format("%.0f%%",s)); 
-        	// TODO save scores to DB
         	saveScores();
         } 
        
@@ -49,13 +63,26 @@ public class QuizActivityEnd extends Activity {
         	}
         });
         
-        Button submitBtn = (Button) findViewById(R.id.quiz_end_submit_btn);
+        Button shareBtn = (Button) findViewById(R.id.quiz_end_share_btn);
+        shareBtn.setOnClickListener(new View.OnClickListener() {
+        	@Override
+			public void onClick(View arg0) {
+        		Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+        		sharingIntent.setType("text/plain");
+        		float sc = quiz.getUserscore()*100/quiz.getMaxscore();
+        		String title = quiz.getTitle();
+        		String link = "http://mquiz.org/my/download.php?ref="+quiz.getRefId();
+        		String shareText = getString(R.string.quiz_end_share_text,sc,title,link);
+        		sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareText);
+        		startActivity(Intent.createChooser(sharingIntent,"Share using"));
+        	}
+        });
+        
+        submitBtn = (Button) findViewById(R.id.quiz_end_submit_btn);
         submitBtn.setOnClickListener(new View.OnClickListener() {
         	@Override
 			public void onClick(View arg0) {
-        		Intent i = new Intent(QuizActivityEnd.this, SubmitActivity.class);
-        		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        		startActivity(i);
+        		sendResults();
         	}
         });
     }
@@ -71,7 +98,7 @@ public class QuizActivityEnd extends Activity {
     	qValues.put(DbHelper.QUIZ_ATTEMPT_C_USERSCORE, quiz.getUserscore());
     	qValues.put(DbHelper.QUIZ_ATTEMPT_C_MAXSCORE, quiz.getMaxscore());
     	qValues.put(DbHelper.QUIZ_ATTEMPT_C_SUBMITTED, false);
-    	long attemptId = dbHelper.saveQuizAttempt(qValues);
+    	attemptId = dbHelper.saveQuizAttempt(qValues);
     	
     	if (attemptId != -1){
 	    	for (Question a: quiz.questions){
@@ -92,4 +119,80 @@ public class QuizActivityEnd extends Activity {
         dbHelper.close();
 
     }
+    
+    public void onResultsSubmitted(boolean result){
+    	
+    }
+    private void sendResults(){
+    	JSONObject json = new JSONObject();
+		// general quiz overview
+		try{
+  	        json.put("username", prefs.getString("prefUsername", ""));
+  	        json.put("quizid", quiz.getRefId());
+  	        json.put("quizdate",  System.currentTimeMillis()/1000L);
+  	        json.put("userscore", quiz.getUserscore());
+  	        json.put("maxscore", quiz.getMaxscore());
+  	        
+  	        // individual quiz responses
+  	        JSONArray responses = new JSONArray();
+  	        dbHelper = new DbHelper(QuizActivityEnd.this);
+  	        Cursor attCur = dbHelper.getAttemptResponses(attemptId.intValue());
+  	        attCur.moveToFirst();
+  	        while (attCur.isAfterLast() == false) {
+  	        	JSONObject r = new JSONObject();
+  	        	r.put("qid", attCur.getString(attCur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_QUESTIONREFID)));
+  	        	r.put("qrid", attCur.getString(attCur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_RESPONSEREFID)));
+  	        	r.put("score", attCur.getFloat(attCur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_SCORE)));
+  	        	responses.put(r);
+  	        	attCur.moveToNext();
+  	        }
+  	        dbHelper.close();
+  	        json.put("responses", responses);
+  	      
+		} catch (JSONException jsone){
+			jsone.printStackTrace();
+		}
+		
+		APIRequest[] resultsToSend = new APIRequest[1];
+		APIRequest r = new APIRequest();
+        r.fullurl = prefs.getString("prefServer", getString(R.string.prefServerDefault)) + "submit/";
+        r.rowId = attemptId.intValue();
+        r.username = prefs.getString("prefUsername", "");
+        r.password = prefs.getString("prefPassword", "");
+        r.timeoutConnection = Integer.parseInt(prefs.getString("prefServerTimeoutConnection", "10000"));
+		r.timeoutSocket = Integer.parseInt(prefs.getString("prefServerTimeoutResponse", "10000"));
+        r.content = json.toString();
+        resultsToSend[0] = r;
+        
+        // show progress dialog
+        pDialog = new ProgressDialog(this);
+        pDialog.setTitle("Sending");
+        pDialog.setMessage("Sending results...");
+        pDialog.setCancelable(true);
+        pDialog.show();
+        submitBtn.setEnabled(false);
+        
+        // send results to server
+        SubmitResultsTask task = new SubmitResultsTask(QuizActivityEnd.this);
+        task.setDownloaderListener(this);
+        task.execute(resultsToSend);
+    }
+
+
+	@Override
+	public void submitResultsComplete(String msg) {
+		// TODO Auto-generated method stub
+		Log.d(TAG,"submit results completed....");
+		pDialog.setMessage(msg);
+		pDialog.dismiss();
+		
+	}
+
+
+	@Override
+	public void progressUpdate(String msg) {
+		// TODO Auto-generated method stub
+		Log.d(TAG,"progress update....");
+		pDialog.setMessage(msg);
+	}
 }

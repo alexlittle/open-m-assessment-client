@@ -14,6 +14,7 @@
 	<string name="main_unregistered">Before you can use mQuiz, please login or register:</string>
 	
 	<string name="quiz_end_share_btn_text">Share quiz results</string>
+	<string name="quiz_end_share_text">I just scored %1$.0f%% in the \'%2$s\' quiz, why don\'t you try: %3$s</string>
 	<string name="quiz_end_submit_btn_text">Submit quiz results</string>
 	
 	<string name="quiz_previous">&lt;&lt; Prev</string>
@@ -48,16 +49,10 @@
 	<string name="submit_btn_text">Submit quiz results (%1$d)</string>
 	
 	<string name="clear_submitted_btn_text">Clear</string>
-	<string name="submit_activity_label">Submit quiz results</string>
-	<string name="submitnow_btn_text">Submit now</string>
 	<string name="take_another_quiz_btn_text">Take another quiz</string>
 	<string name="please_answer">Please give an answer before going to the next question</string>
 	
 	<string name="noconnection">No connection currently available, please try later.\n</string>
-	
-	<string name="tosubmit">There are %1$d quiz results waiting to be submitted\n</string>
-	<string name="submitting">Sending quiz results %1$d of %2$d: %3$s\n</string>
-	<string name="submitted">Successfully sent %1$d of %2$d quiz results\n</string>
 
 	
 

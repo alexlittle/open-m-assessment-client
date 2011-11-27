@@ -8,6 +8,10 @@ public class APIRequest implements Cloneable {
 	public int timeoutConnection;
 	public int timeoutSocket;
 	
+	public String content;
+	//not best place for this but for now leave here....
+	public int rowId;
+	
 	public APIRequest clone(){
         try{
             return (APIRequest) super.clone();

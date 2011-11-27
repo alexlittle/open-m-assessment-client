@@ -210,7 +210,7 @@ public class DbHelper extends SQLiteOpenHelper{
 	
 	public Cursor getUnsubmitted(){
 		String criteria = DbHelper.QUIZ_ATTEMPT_C_SUBMITTED + "= 0";
-		return db.query(DbHelper.QUIZ_ATTEMPT_TABLE, null, criteria , null, null, null, QUIZ_ATTEMPT_GET_ALL_ORDER_BY_ASC);
+		return db.query(DbHelper.QUIZ_ATTEMPT_TABLE, null, criteria , null, null, null, QUIZ_ATTEMPT_GET_ALL_ORDER_BY_ASC);	
 	}
 
 	public Cursor getAttemptResponses(int attemptid){
