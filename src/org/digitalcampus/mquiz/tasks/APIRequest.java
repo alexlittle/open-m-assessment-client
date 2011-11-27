@@ -9,8 +9,10 @@ public class APIRequest implements Cloneable {
 	public int timeoutSocket;
 	
 	public String content;
-	//not best place for this but for now leave here....
+	
+	//TODO not best place for these but for now leave here....
 	public int rowId;
+	public String refId;
 	
 	public APIRequest clone(){
         try{

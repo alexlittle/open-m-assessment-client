@@ -15,9 +15,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.digitalcampus.mquiz.model.DbHelper;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.content.Context;
 import android.os.AsyncTask;

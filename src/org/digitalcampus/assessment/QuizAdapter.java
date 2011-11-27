@@ -2,12 +2,10 @@ package org.digitalcampus.assessment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.digitalcampus.mquiz.model.Quiz;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

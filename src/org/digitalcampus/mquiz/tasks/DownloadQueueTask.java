@@ -89,6 +89,7 @@ public class DownloadQueueTask extends AsyncTask<APIRequest, String, String>{
 				JSONObject json_obj=json.getJSONObject(i);
 				APIRequest dlQuiz = currentRequest.clone();
 				dlQuiz.fullurl = currentRequest.baseurl + "list/getquiz.php?ref="+ json_obj.getString("quizref");
+				dlQuiz.refId = json_obj.getString("quizref");
 				dlQuizzes[i] = dlQuiz;	
 			}
 			

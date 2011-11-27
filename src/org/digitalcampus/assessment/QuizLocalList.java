@@ -9,10 +9,8 @@ import org.digitalcampus.mquiz.model.DbHelper;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,7 +19,6 @@ public class QuizLocalList extends ListActivity{
 	
 	private static final String TAG = "QuizLocalList";
 	
-	private SharedPreferences prefs;
 	private QuizAdapter qa;
 	private Button deleteBtn;
 	
@@ -29,8 +26,8 @@ public class QuizLocalList extends ListActivity{
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        prefs = PreferenceManager.getDefaultSharedPreferences(this); 
         setContentView(R.layout.quizlocallist);
+        
         deleteBtn = (Button) findViewById(R.id.deleteQuizBtn);
         deleteBtn.setOnClickListener(new View.OnClickListener() {
         	@Override
