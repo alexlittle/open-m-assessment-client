@@ -20,6 +20,8 @@
 		<activity android:name=".AboutActivity" android:label="@string/title_about" />
 		<activity android:name=".SelectQuizActivity" android:label="@string/title_select_quiz" />
 		<activity android:name=".ManageQuizActivity" android:label="@string/title_manage_quiz" />
+		<activity android:name=".QuizLocalList" android:label="@string/title_manage_quiz" />
+		<activity android:name=".QuizRemoteList" android:label="@string/title_manage_quiz" />
 		<activity android:name=".RegisterActivity" android:label="@string/title_register" />
     </application>
     

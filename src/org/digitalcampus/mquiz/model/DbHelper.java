@@ -283,6 +283,15 @@ public class DbHelper extends SQLiteOpenHelper{
 			String quizRefId = (String) json.get("refid");
 			String title = (String) json.get("title");
 			int maxscore = Integer.parseInt((String) json.get("maxscore"));
+			
+			//check is already installed
+			Cursor isInstalled = getQuiz(quizRefId);
+			if(isInstalled.getCount() > 0){
+				Log.d(TAG,"Quiz already installed");
+				isInstalled.close();
+				return true;
+			}
+			isInstalled.close();
 			clearQuiz(quizRefId);
 			
 			// add to Quiz table

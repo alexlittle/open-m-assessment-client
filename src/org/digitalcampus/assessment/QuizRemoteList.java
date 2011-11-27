@@ -31,6 +31,7 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -40,9 +41,9 @@ import android.widget.Button;
 
 public class QuizRemoteList extends ListActivity{
 
-	private static final String TAG = "ManageQuizActivity";
+	private static final String TAG = "QuizRemoteList";
 	private ProgressDialog pDialog;
-	SharedPreferences prefs;
+	private SharedPreferences prefs;
 	private Button actionBtn;
 	private boolean downloadedQuizzes;
 	public String[] checkedItems;
@@ -53,7 +54,7 @@ public class QuizRemoteList extends ListActivity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         prefs = PreferenceManager.getDefaultSharedPreferences(this); 
-        setContentView(R.layout.manage);
+        setContentView(R.layout.quizremotelist);
         downloadedQuizzes = false;
         
         actionBtn = (Button) findViewById(R.id.listquizBtn);
@@ -225,10 +226,18 @@ public class QuizRemoteList extends ListActivity{
 		Iterator<String> itr = qa.checkedQuizzes.keySet().iterator();
 		
 		int counter = 0;
+		DbHelper dbh = new DbHelper(QuizRemoteList.this);
 		while(itr.hasNext()){
 			String id = itr.next();
 			if (qa.checkedQuizzes.get(id).isChecked()){
-				counter++;	
+				Cursor isInstalled = dbh.getQuiz(id);
+				Log.d(TAG,"checking: "+ id);
+				if(isInstalled.getCount() > 0){
+					Log.d(TAG,"Quiz already installed");
+				} else {
+					counter++;	
+				}
+				isInstalled.close();
 			}
 		}
 		
@@ -239,14 +248,23 @@ public class QuizRemoteList extends ListActivity{
 		
 		Quiz[] quizzes = new Quiz[counter];
 		itr = qa.checkedQuizzes.keySet().iterator();
+		dbh = new DbHelper(QuizRemoteList.this);
 		int c=0;
 		while(itr.hasNext()){
 			String id = itr.next();
 			if (qa.checkedQuizzes.get(id).isChecked()){
-				quizzes[c] = qa.checkedQuizzes.get(id);
-				c++;
+				Cursor isInstalled = dbh.getQuiz(id);
+				Log.d(TAG,"checking: "+ id);
+				if(isInstalled.getCount() > 0){
+					Log.d(TAG,"Quiz already installed");
+				} else {
+					quizzes[c] = qa.checkedQuizzes.get(id);
+					c++;
+				}
+				isInstalled.close();
 			}
 		}
+		dbh.close();
 		
 		// show progress dialog
         pDialog = new ProgressDialog(this);

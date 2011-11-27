@@ -7,11 +7,14 @@
 	
 	<string name="main_email_title">Email address</string>
 	<string name="main_login_btn_text">Login</string>
+	<string name="main_manage_btn_text">Download quizzes</string>
 	<string name="main_menu_message">Digital Campus</string>
 	<string name="main_password_title">Password</string>
 	<string name="main_register_btn_text">Register for mQuiz</string>
 	<string name="main_take_quiz_btn_text">Take a quiz</string>
 	<string name="main_unregistered">Before you can use mQuiz, please login or register:</string>
+	
+	<string name="manage_delete_quiz_btn_text">Delete selected</string>
 	
 	<string name="quiz_end_share_btn_text">Share quiz results</string>
 	<string name="quiz_end_share_text">I just scored %1$.0f%% in the \'%2$s\' quiz, why don\'t you try: %3$s</string>
@@ -39,8 +42,8 @@
 	<string name="version">v1.1.5 (25 Nov 2011)</string>
 	
 
-
-	<string name="manage_quiz_btn_text">Download quizzes</string>
+	
+	
 	<string name="list_quiz_btn_text">Download selected</string>
 	<string name="quiz_summary">Quiz Results</string>
 	<string name="quiz_attempts">Previous attempts</string>

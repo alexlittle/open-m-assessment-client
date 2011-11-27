@@ -62,7 +62,7 @@
     <Button android:id="@+id/manage_quiz_btn"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/manage_quiz_btn_text" 
+            android:text="@string/main_manage_btn_text" 
             android:textSize="20dp"
             android:textStyle="bold"
             android:layout_margin="5dp" 
