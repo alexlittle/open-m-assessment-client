@@ -185,7 +185,8 @@ public class DbHelper extends SQLiteOpenHelper{
 	}
 	
 	public Cursor getQuizzes(){
-		return db.query(QUIZ_TABLE, null, null , null, null, null, null);
+		String order = QUIZ_C_TITLE + " ASC";
+		return db.query(QUIZ_TABLE, null, null , null, null, null, order);
 	}
 	
 	public Cursor getQuiz(String qrefid){

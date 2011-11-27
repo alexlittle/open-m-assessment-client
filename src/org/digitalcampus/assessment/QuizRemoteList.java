@@ -226,18 +226,11 @@ public class QuizRemoteList extends ListActivity{
 		Iterator<String> itr = qa.checkedQuizzes.keySet().iterator();
 		
 		int counter = 0;
-		DbHelper dbh = new DbHelper(QuizRemoteList.this);
+
 		while(itr.hasNext()){
 			String id = itr.next();
 			if (qa.checkedQuizzes.get(id).isChecked()){
-				Cursor isInstalled = dbh.getQuiz(id);
-				Log.d(TAG,"checking: "+ id);
-				if(isInstalled.getCount() > 0){
-					Log.d(TAG,"Quiz already installed");
-				} else {
-					counter++;	
-				}
-				isInstalled.close();
+				counter++;	
 			}
 		}
 		
@@ -248,23 +241,15 @@ public class QuizRemoteList extends ListActivity{
 		
 		Quiz[] quizzes = new Quiz[counter];
 		itr = qa.checkedQuizzes.keySet().iterator();
-		dbh = new DbHelper(QuizRemoteList.this);
 		int c=0;
 		while(itr.hasNext()){
 			String id = itr.next();
 			if (qa.checkedQuizzes.get(id).isChecked()){
-				Cursor isInstalled = dbh.getQuiz(id);
-				Log.d(TAG,"checking: "+ id);
-				if(isInstalled.getCount() > 0){
-					Log.d(TAG,"Quiz already installed");
-				} else {
-					quizzes[c] = qa.checkedQuizzes.get(id);
-					c++;
-				}
-				isInstalled.close();
+				quizzes[c] = qa.checkedQuizzes.get(id);
+				c++;
 			}
 		}
-		dbh.close();
+
 		
 		// show progress dialog
         pDialog = new ProgressDialog(this);
@@ -293,7 +278,7 @@ public class QuizRemoteList extends ListActivity{
     		
     		List<DownloadResult> toRet = new ArrayList<DownloadResult>();
     		
-    		for (Quiz u : urls) {
+    		for (Quiz q : urls) {
     			String response = "";
     			
     			HttpParams httpParameters = new BasicHttpParams();
@@ -315,48 +300,61 @@ public class QuizRemoteList extends ListActivity{
     			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 
     			DefaultHttpClient client = new DefaultHttpClient(httpParameters);
-    			
-    			HttpPost httpPost = new HttpPost(u.getUrl());
-    			try {
-    				String msg = "Downloading '" + u.getTitle() + "'";
-    				publishProgress(msg);
-    				
-    				// add post params
-    				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-    				nameValuePairs.add(new BasicNameValuePair("username", prefs.getString("prefUsername", "")));
-    				nameValuePairs.add(new BasicNameValuePair("password", prefs.getString("prefPassword", "")));
-    				httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-    				
-    				// make request
-					HttpResponse execute = client.execute(httpPost);
-					
-					// read response
-					InputStream content = execute.getEntity().getContent();
-					BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-					String s = "";
-					while ((s = buffer.readLine()) != null) {
-						response += s;
-					}
-					
+    			DbHelper dbh = new DbHelper(QuizRemoteList.this);
+    			Cursor isInstalled = dbh.getQuiz(q.getRefId());
+
+				if(isInstalled.getCount() > 0){
 					DownloadResult dr = new DownloadResult();
-					dr.name	= u.getTitle();
-					try {
-	    				new JSONObject(response);
-	    				dr.responseObj = response;
-	    			} catch (JSONException e){
-	    				dr.responseObj = response;
-	    			}
-					
+					dr.name	= q.getTitle();
+					dr.responseObj = "already installed";
 					toRet.add(dr);
-    				
-    			} catch (Exception e) {
-    				e.printStackTrace();
-    				DownloadResult dr = new DownloadResult();
-					dr.name	= u.getTitle();
-					dr.responseObj = "Connection error or invalid response from server";
-					toRet.add(dr);
-				}
+					Log.d(TAG,dr.name);
+    			} else {
+	    			HttpPost httpPost = new HttpPost(q.getUrl());
+	    			try {
+	    				String msg = "Downloading '" + q.getTitle() + "'";
+	    				publishProgress(msg);
+	    				
+	    				// add post params
+	    				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+	    				nameValuePairs.add(new BasicNameValuePair("username", prefs.getString("prefUsername", "")));
+	    				nameValuePairs.add(new BasicNameValuePair("password", prefs.getString("prefPassword", "")));
+	    				httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+	    				
+	    				// make request
+						HttpResponse execute = client.execute(httpPost);
+						
+						// read response
+						InputStream content = execute.getEntity().getContent();
+						BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+						String s = "";
+						while ((s = buffer.readLine()) != null) {
+							response += s;
+						}
+						
+						DownloadResult dr = new DownloadResult();
+						dr.name	= q.getTitle();
+						try {
+		    				new JSONObject(response);
+		    				dr.responseObj = response;
+		    			} catch (JSONException e){
+		    				dr.responseObj = response;
+		    			}
+						
+						toRet.add(dr);
+	    				
+	    			} catch (Exception e) {
+	    				e.printStackTrace();
+	    				DownloadResult dr = new DownloadResult();
+						dr.name	= q.getTitle();
+						dr.responseObj = "Connection error or invalid response from server";
+						toRet.add(dr);
+					}
+    			}
+				isInstalled.close();
+				dbh.close();
 			}
+    		
 			return toRet;
     	}
     	
