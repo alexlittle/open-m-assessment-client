@@ -143,7 +143,7 @@ public class SubmitActivity extends Activity {
 
         		json.put("responses", responses);
         		
-        		String url = prefs.getString("prefServer", getString(R.string.prefServerDefault)) + prefs.getString("prefServerSubmitPath", getString(R.string.prefServerSubmitPathDefault));
+        		String url = prefs.getString("prefServer", getString(R.string.prefServerDefault)) + "submit/";
             	
             	Result r = new Result();
             	r.url = url;

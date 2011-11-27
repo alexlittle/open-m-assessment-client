@@ -86,7 +86,7 @@ public class ManageQuizActivity extends ListActivity{
     	// send results as AsyncTask
         GetQuizListTask task = new GetQuizListTask();
         String[] url = new String[1];
-        url[0] = prefs.getString("prefServer", getString(R.string.prefServerDefault))+prefs.getString("prefServerListPath", getString(R.string.prefServerListPathDefault));
+        url[0] = prefs.getString("prefServer", getString(R.string.prefServerDefault))+"list/";
         task.execute(url);
     }
     

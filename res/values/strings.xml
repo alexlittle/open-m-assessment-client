@@ -66,15 +66,11 @@
 	<string name="prefPassword">Password</string>
 	<string name="prefServerDefault">http://mquiz.org/</string>
 	<string name="prefAdvanced">Advanced preferences</string>
-	<string name="prefAutoDownloadInterval">Auto download Interval</string>
-	<string name="prefAutoDownloadIntervalDefault">Auto download Interval</string>
+	<string name="prefAutoDownloadInterval">Auto download interval</string>
+	<string name="prefAutoDownloadIntervalDefault">7200</string>
 	<string name="prefAutoDownloadInterval_summary">How often to check for quizzes to be downloaded </string>
 	<string name="prefServerTimeoutConnection">Connection timeout</string>
 	<string name="prefServerTimeoutConnectionDefault">10000</string>
 	<string name="prefServerTimeoutResponse">Response timeout</string>
 	<string name="prefServerTimeoutResponseDefault">20000</string>
-    <string name="prefServerListPath">Quiz list path</string>
-    <string name="prefServerSubmitPath">Submit results path</string>
-    <string name="prefServerListPathDefault">list/</string>
-    <string name="prefServerSubmitPathDefault">submit/</string>
 </resources>

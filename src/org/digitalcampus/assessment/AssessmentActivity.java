@@ -28,7 +28,6 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
 	
 	private final static String TAG = "AssessmentActivity";
 	
-	
 	private Button takeQuizBtn;
 	private Button resultsBtn;
 	private Button submitBtn;
@@ -52,9 +51,7 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
         
         prefs = PreferenceManager.getDefaultSharedPreferences(this); 
         prefs.registerOnSharedPreferenceChangeListener(this);
-       
-        
-        setDefaultPrefs();
+        PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
         
         takeQuizBtn = (Button) findViewById(R.id.take_quiz_btn);
         takeQuizBtn.setOnClickListener(new View.OnClickListener() {
@@ -116,8 +113,6 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
         		AssessmentActivity.this.loginUser();
         	}
         });
-       
-        
     }
     
     protected void onStart(){
@@ -128,7 +123,6 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
         int noToSubmit = cur.getCount();
         cur.close();
         
-        
         if(noToSubmit == 0){
         	submitBtn.setEnabled(false);
         } else {
@@ -137,11 +131,11 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
         
         submitBtn.setText(String.format(getString(R.string.submit_btn_text), noToSubmit)); 
        
-        //check to see if username/password set
+        // check to see if username/password set
         this.setScreen();
         
-       
-        boolean runDownload = dbHelper.runAutoDownload();
+        int interval = Integer.parseInt(prefs.getString("prefAutoDownloadInterval", getString(R.string.prefAutoDownloadIntervalDefault)));
+        boolean runDownload = dbHelper.runAutoDownload(interval);
         dbHelper.close();
         // check to see if any quizzes are waiting to be downloaded
         if(this.isLoggedIn() && runDownload){
@@ -238,7 +232,6 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
 			@Override
 			public void onClick(DialogInterface arg0, int arg1) {
 				// TODO Auto-generated method stub
-				
 			}
 	     });
 		builder.show();
@@ -269,15 +262,4 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
     }
 
-    private void setDefaultPrefs(){
-    	if(!isLoggedIn()){
-	    	Editor editor = prefs.edit();
-	    	editor.putString("prefServer", getString(R.string.prefServerDefault));
-	    	editor.putString("prefUsername", "");
-	    	editor.putString("prefPassword", "");
-	    	editor.putString("prefServerListPath", getString(R.string.prefServerListPathDefault));
-	    	editor.putString("prefServerSubmitPath", getString(R.string.prefServerSubmitPathDefault));
-	    	editor.commit();
-    	}
-    }
 }

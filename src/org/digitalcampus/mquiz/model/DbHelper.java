@@ -351,8 +351,11 @@ public class DbHelper extends SQLiteOpenHelper{
 		db.insertOrThrow(DbHelper.QUIZ_ATTEMPT_RESPONSE_TABLE, null, cVals);
 	}
 
-	public boolean runAutoDownload(){
+	public boolean runAutoDownload(int interval){
 		boolean resp = true;
+		if(interval == 0){
+			return resp;
+		}
 		String criteria = DbHelper.PROPS_C_NAME + "='lastautodownload'";
 		Cursor cur = db.query(DbHelper.PROPS_TABLE, null, criteria , null, null, null, null);
 		
@@ -364,7 +367,7 @@ public class DbHelper extends SQLiteOpenHelper{
 			try{
 				Date lastdl = df.parse(cur.getString(cur.getColumnIndex(PROPS_C_VALUE)));
 				Long lastdltime = lastdl.getTime();
-				lastdltime +=(2*60*60*1000);
+				lastdltime +=(interval*1000);
 				if(dnow.getTime() < lastdltime){
 					resp= false;
 				}
