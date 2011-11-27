@@ -28,7 +28,6 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
 	
 	private final static String TAG = "AssessmentActivity";
 	
-	private DbHelper dbHelper;
 	
 	private Button takeQuizBtn;
 	private Button resultsBtn;
@@ -54,7 +53,6 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
         prefs = PreferenceManager.getDefaultSharedPreferences(this); 
         prefs.registerOnSharedPreferenceChangeListener(this);
        
-        dbHelper = new DbHelper(this);
         
         setDefaultPrefs();
         
@@ -124,9 +122,12 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
     
     protected void onStart(){
     	super.onStart();
+    	DbHelper dbHelper = new DbHelper(AssessmentActivity.this);
+    	
     	Cursor cur = dbHelper.getUnsubmitted();
         int noToSubmit = cur.getCount();
         cur.close();
+        
         
         if(noToSubmit == 0){
         	submitBtn.setEnabled(false);
@@ -139,7 +140,7 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
         //check to see if username/password set
         this.setScreen();
         
-        DbHelper dbHelper = new DbHelper(AssessmentActivity.this);
+       
         boolean runDownload = dbHelper.runAutoDownload();
         dbHelper.close();
         // check to see if any quizzes are waiting to be downloaded

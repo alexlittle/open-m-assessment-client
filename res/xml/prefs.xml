@@ -7,11 +7,13 @@
     	android:defaultValue="@string/prefServerDefault"></EditTextPreference>
     <EditTextPreference 
     	android:title="@string/prefUsername"
-    	android:key="prefUsername"></EditTextPreference>
+    	android:key="prefUsername"
+    	android:defaultValue=""></EditTextPreference>
     <EditTextPreference 
     	android:title="@string/prefPassword" 
     	android:key="prefPassword"
-    	android:inputType="textPassword"></EditTextPreference>
+    	android:inputType="textPassword"
+    	android:defaultValue=""></EditTextPreference>
     <PreferenceCategory
 		android:title="@string/prefAdvanced">
 		<EditTextPreference 
@@ -22,6 +24,13 @@
 	    	android:title="@string/prefServerTimeoutResponse" 
 	    	android:key="prefServerTimeoutResponse"
 			android:defaultValue="@string/prefServerTimeoutResponseDefault"></EditTextPreference>
+		<ListPreference
+            android:title="@string/prefAutoDownloadInterval"
+            android:summary="This preference allows to select an item in a array"
+            android:key="autoDownloadInterval"
+            android:defaultValue="@string/prefAutoDownloadIntervalDefault"
+            android:entries="@array/autoDownloadInterval"
+            android:entryValues="@array/autoDownloadIntervalValues" />
 		<EditTextPreference 
 	    	android:title="@string/prefServerListPath" 
 	    	android:key="prefServerListPath"

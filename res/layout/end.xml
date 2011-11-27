@@ -27,6 +27,15 @@
 		android:layout_margin="10dp" 
 		android:id="@+id/score_text"/>
 	
+	
+	<Button android:id="@+id/quiz_end_share_btn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/quiz_end_share_btn_text" 
+            android:textSize="20dp"
+            android:textStyle="bold" 
+            android:layout_margin="5dp"/>
+	
 	<Button android:id="@+id/quiz_end_submit_btn"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

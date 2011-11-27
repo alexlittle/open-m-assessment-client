@@ -35,7 +35,7 @@
 	<Button android:id="@+id/take_quiz_btn"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/take_quiz_btn_text" 
+            android:text="@string/main_take_quiz_btn_text" 
             android:textSize="20dp"
             android:textStyle="bold" 
             android:layout_margin="5dp"
@@ -106,7 +106,7 @@
     <Button android:id="@+id/register_btn"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/register_btn_text" 
+            android:text="@string/main_register_btn_text" 
             android:textSize="20dp"
             android:textStyle="bold"
             android:layout_margin="5dp" />

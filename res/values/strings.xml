@@ -9,7 +9,16 @@
 	<string name="main_login_btn_text">Login</string>
 	<string name="main_menu_message">Digital Campus</string>
 	<string name="main_password_title">Password</string>
+	<string name="main_register_btn_text">Register for mQuiz</string>
+	<string name="main_take_quiz_btn_text">Take a quiz</string>
 	<string name="main_unregistered">Before you can use mQuiz, please login or register:</string>
+	
+	<string name="quiz_end_share_btn_text">Share quiz results</string>
+	<string name="quiz_end_submit_btn_text">Submit quiz results</string>
+	
+	<string name="quiz_previous">&lt;&lt; Prev</string>
+	<string name="quiz_next">Next &gt;&gt;</string>
+	<string name="quiz_end">Get results &gt;&gt;</string>
 	
 	<string name="register_form_email_title">Email address</string>
 	<string name="register_form_firstname_title">First name</string>
@@ -17,6 +26,7 @@
 	<string name="register_form_password_title">Password</string>
 	<string name="register_form_password_again_title">Password (again)</string>
 	<string name="register_form_submit">Register now</string>
+	<string name="register_register_btn_text">Register for mQuiz</string>
 	
 	<string name="title_about">About</string>
 	<string name="title_manage_quiz">Manage quizzes</string>
@@ -24,20 +34,21 @@
 	<string name="title_quiz">%1$s: Question %2$d of %3$d</string>
 	<string name="title_register">Register</string>
 	<string name="title_select_quiz">Select a quiz</string>
+	
 	<string name="version">v1.1.5 (25 Nov 2011)</string>
 	
 
-	<string name="take_quiz_btn_text">Take a quiz</string>
+
 	<string name="manage_quiz_btn_text">Download quizzes</string>
 	<string name="list_quiz_btn_text">Download selected</string>
 	<string name="quiz_summary">Quiz Results</string>
-	<string name="quiz_attempts">Previous Attempts</string>
-	<string name="register_btn_text">Register for mQuiz</string>
-	<string name="results_btn_text">View Previous Scores</string>
-	<string name="submit_btn_text">Submit Quiz Results (%1$d)</string>
-	<string name="quiz_end_submit_btn_text">Submit Quiz Results</string>
+	<string name="quiz_attempts">Previous attempts</string>
+	
+	<string name="results_btn_text">View previous scores</string>
+	<string name="submit_btn_text">Submit quiz results (%1$d)</string>
+	
 	<string name="clear_submitted_btn_text">Clear</string>
-	<string name="submit_activity_label">Submit Quiz Results</string>
+	<string name="submit_activity_label">Submit quiz results</string>
 	<string name="submitnow_btn_text">Submit now</string>
 	<string name="take_another_quiz_btn_text">Take another quiz</string>
 	<string name="please_answer">Please give an answer before going to the next question</string>
@@ -48,15 +59,16 @@
 	<string name="submitting">Sending quiz results %1$d of %2$d: %3$s\n</string>
 	<string name="submitted">Successfully sent %1$d of %2$d quiz results\n</string>
 
-	<string name="quiz_previous">&lt;&lt; Prev</string>
-	<string name="quiz_next">Next &gt;&gt;</string>
-	<string name="quiz_end">Get results &gt;&gt;</string>
+	
 
 	<string name="prefServer">Server</string>
 	<string name="prefUsername">Email</string>
 	<string name="prefPassword">Password</string>
 	<string name="prefServerDefault">http://mquiz.org/</string>
 	<string name="prefAdvanced">Advanced preferences</string>
+	<string name="prefAutoDownloadInterval">Auto download Interval</string>
+	<string name="prefAutoDownloadIntervalDefault">Auto download Interval</string>
+	<string name="prefAutoDownloadInterval_summary">How often to check for quizzes to be downloaded </string>
 	<string name="prefServerTimeoutConnection">Connection timeout</string>
 	<string name="prefServerTimeoutConnectionDefault">10000</string>
 	<string name="prefServerTimeoutResponse">Response timeout</string>
