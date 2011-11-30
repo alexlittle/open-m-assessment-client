@@ -99,18 +99,14 @@ public class QuizActivityEnd extends Activity implements SubmitResultsListener{
     	
     	if (attemptId != -1){
 	    	for (QuizQuestion a: quiz.questions){
-	    		for (Response r : a.getResponses()){
-	    			if(r.isSelected()){
-			    		ContentValues rValues = new ContentValues();
-			    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_ATTEMPTID, attemptId);
-			    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_QUIZREFID,quiz.getRefId());
-			    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_QUESTIONREFID, a.getRefid());
-			    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_RESPONSEREFID, r.getRefid());
-			    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_SCORE, r.getScore());
-			    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_TEXT, r.getText());
-			    		dbHelper.saveQuizAttemptResponse(rValues);
-	    			} 
-	    		}
+	    		ContentValues rValues = new ContentValues();
+	    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_ATTEMPTID, attemptId);
+	    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_QUIZREFID,quiz.getRefId());
+	    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_QUESTIONREFID, a.getRefid());
+	    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_RESPONSEREFID, "");
+	    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_SCORE, a.getUserscore());
+	    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_TEXT, a.getResponse());
+	    		dbHelper.saveQuizAttemptResponse(rValues);
 	    	}
     	}
     	

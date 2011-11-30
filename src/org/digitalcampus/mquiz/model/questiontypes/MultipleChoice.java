@@ -24,6 +24,7 @@ public class MultipleChoice implements Serializable, QuizQuestion {
 	private String qhint;
 	private List<Response> responses = new ArrayList<Response>();
 	private int userscore = 0;
+	private String responseText = "";
 	
 	public void addResponse(Response r){
 		responses.add(r);
@@ -32,18 +33,13 @@ public class MultipleChoice implements Serializable, QuizQuestion {
 	public List<Response> getResponses(){
 		return responses;
 	}
-	public Response setResponseSelected(int id){
-		Response r = responses.get(id);
-		r.setSelected(true);
-		return r;
-	}
 	
 	public void mark(){
 		// loop through the responses
 		// find whichever are set as selected and add up the responses
 		int total = 0;
 		for (Response r : responses){
-			if (r.isSelected()){
+			if (r.getText() == this.responseText){
 				total += r.getScore();
 			}
 		}
@@ -124,6 +120,15 @@ public class MultipleChoice implements Serializable, QuizQuestion {
 
 	public void setQhint(String qhint) {
 		this.qhint = qhint;
+	}
+
+	public void setResponse(String str) {
+		this.responseText = str;
+		
+	}
+
+	public String getResponse() {
+		return this.responseText;
 	}
 	
 

@@ -18,7 +18,6 @@ public class Response implements Serializable{
 	private int orderno;
 	private String text;
 	private float score;
-	private boolean isSelected;
 	
 	public String getQuestionRefid() {
 		return questionrefid;
@@ -55,12 +54,6 @@ public class Response implements Serializable{
 	}
 	public void setScore(float score) {
 		this.score = score;
-	}
-	public boolean isSelected() {
-		return isSelected;
-	}
-	public void setSelected(boolean isSelected) {
-		this.isSelected = isSelected;
 	}
 	public int getDbid() {
 		return dbid;

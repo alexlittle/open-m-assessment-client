@@ -6,11 +6,14 @@ import java.util.List;
 
 public interface QuizQuestion extends Serializable {
 	
+	
 	public void addResponse(Response r);
 	
 	public List<Response> getResponses();
 	
-	public Response setResponseSelected(int id);
+	public void setResponse(String str);
+	
+	public String getResponse();
 	
 	public void mark();
 	

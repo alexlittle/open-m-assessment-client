@@ -107,32 +107,16 @@ public class QuizActivity extends Activity {
     	int qNo = quiz.getCurrentq()+1;
     	int qTotal = quiz.questions.size();
     	this.setTitle(getString(R.string.title_quiz,quiz.getTitle(),qNo,qTotal));
-    	
-    	LinearLayout ll = (LinearLayout) findViewById(R.id.quizQuestion);
-    	
+
     	if(q.getQtype().equals("multichoice")){
-    		qw = new MultipleChoiceWidget(QuizActivity.this,ll);
-    		qw.setQuestionText(q.getQtext());
-    		qw.setQuestionHint(quiz.questions.get(quiz.getCurrentq()).getQhint());
+    		qw = new MultipleChoiceWidget(QuizActivity.this);
+    		
     	}
     	
     	// show the responses
-    	/*LinearLayout responsesLL = (LinearLayout) findViewById(R.id.questionresponses);
-    	responsesLL.removeAllViews();
-    	RadioGroup responsesRG = new RadioGroup(this);
-    	responsesRG.setId(q.getDbid());
-    	responsesLL.addView(responsesRG);
-    	
-    	for (Response r : q.getResponses()){
-    		RadioButton rb = new RadioButton(this);
-    		rb.setId(r.getDbid()*1000);
-    	
-			rb.setText(r.getText());
-			responsesRG.addView(rb);
-			if (r.isSelected()){
-				rb.setChecked(true);
-			}
-    	}*/
+    	qw.setQuestionText(q.getQtext());
+		qw.setQuestionHint(quiz.questions.get(quiz.getCurrentq()).getQhint());
+		qw.setQuestionResponses(q.getResponses(),q.getResponse());
     	
     	if (!quiz.hasNext()){
     		nextBtn.setText(R.string.quiz_end);
@@ -149,22 +133,13 @@ public class QuizActivity extends Activity {
     }
     
     private boolean saveAnswer(){
-    	RadioGroup responsesRG = (RadioGroup) findViewById(quiz.questions.get(quiz.getCurrentq()).getDbid());
-    	int resp = responsesRG.getCheckedRadioButtonId();
-    	View rb = responsesRG.findViewById(resp);
-    	int idx = responsesRG.indexOfChild(rb);
-    	// set all previous responses to false
-    	for (Response r : quiz.questions.get(quiz.getCurrentq()).getResponses()){
-    		r.setSelected(false);
-    	}
-    	if (idx >= 0){
-    		quiz.questions.get(quiz.getCurrentq()).setResponseSelected(idx);
-    		quiz.questions.get(quiz.getCurrentq()).mark();
-    		return true;
-    	} else {
+    	String answer = qw.getQuestionResponse(quiz.questions.get(quiz.getCurrentq()).getResponses());
+    	if(answer == null){
     		return false;
+    	} else {
+    		quiz.questions.get(quiz.getCurrentq()).setResponse(answer);
+    		return true;
     	}
-    	
     }
     
     private void loadQuiz(){
@@ -207,7 +182,6 @@ public class QuizActivity extends Activity {
 				r.setScore(respCur.getFloat(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_SCORE)));
 				r.setOrderno(respCur.getInt(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_ORDERNO)));
 				r.setText(respCur.getString(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_TEXT)));
-				r.setSelected(false);
 				
 				q.addResponse(r);
 				respCur.moveToNext();
