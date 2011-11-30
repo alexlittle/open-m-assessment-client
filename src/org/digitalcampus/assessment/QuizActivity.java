@@ -2,18 +2,20 @@ package org.digitalcampus.assessment;
 
 import org.digitalcampus.mquiz.model.*;
 import org.digitalcampus.mquiz.model.questiontypes.MultipleChoice;
+import org.digitalcampus.mquiz.widgets.MultipleChoiceWidget;
+import org.digitalcampus.mquiz.widgets.QuestionWidget;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class QuizActivity extends Activity {
@@ -26,6 +28,8 @@ public class QuizActivity extends Activity {
 	
 	private Button prevBtn;
 	private Button nextBtn;
+	
+	private QuestionWidget qw;
 	
 	/** Called when the activity is first created. */
     @Override
@@ -80,7 +84,12 @@ public class QuizActivity extends Activity {
         	}
         });
         
-        // get data from previous activity
+        
+    }
+    
+    protected void onStart(){
+    	super.onStart();
+    	// get data from previous activity
         // tells us which quiz to load
         Bundle b = this.getIntent().getExtras(); 
         if(b != null) {
@@ -90,28 +99,25 @@ public class QuizActivity extends Activity {
         }
     }
     
-    private void showQuestion(){    
+    private void showQuestion(){ 
     	// show the question
     	QuizQuestion q = quiz.questions.get(quiz.getCurrentq());
-    	TextView qText = (TextView) findViewById(R.id.questiontext);
-    	qText.setText(q.getQtext());
-    
+    	
     	// show title
     	int qNo = quiz.getCurrentq()+1;
     	int qTotal = quiz.questions.size();
     	this.setTitle(getString(R.string.title_quiz,quiz.getTitle(),qNo,qTotal));
     	
-    	// show hint
-    	TextView qHint = (TextView) findViewById(R.id.questionhint);
-    	if(quiz.questions.get(quiz.getCurrentq()).getQhint().equals("")){
-    		qHint.setVisibility(View.GONE);
-    	} else {
-    		qHint.setText(quiz.questions.get(quiz.getCurrentq()).getQhint());
-    		qHint.setVisibility(View.VISIBLE);
+    	LinearLayout ll = (LinearLayout) findViewById(R.id.quizQuestion);
+    	
+    	if(q.getQtype().equals("multichoice")){
+    		qw = new MultipleChoiceWidget(QuizActivity.this,ll);
+    		qw.setQuestionText(q.getQtext());
+    		qw.setQuestionHint(quiz.questions.get(quiz.getCurrentq()).getQhint());
     	}
     	
     	// show the responses
-    	LinearLayout responsesLL = (LinearLayout) findViewById(R.id.questionresponses);
+    	/*LinearLayout responsesLL = (LinearLayout) findViewById(R.id.questionresponses);
     	responsesLL.removeAllViews();
     	RadioGroup responsesRG = new RadioGroup(this);
     	responsesRG.setId(q.getDbid());
@@ -126,7 +132,7 @@ public class QuizActivity extends Activity {
 			if (r.isSelected()){
 				rb.setChecked(true);
 			}
-    	}
+    	}*/
     	
     	if (!quiz.hasNext()){
     		nextBtn.setText(R.string.quiz_end);
