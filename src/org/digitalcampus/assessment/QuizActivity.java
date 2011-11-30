@@ -1,7 +1,9 @@
 package org.digitalcampus.assessment;
 
 import org.digitalcampus.mquiz.model.*;
+import org.digitalcampus.mquiz.model.questiontypes.Essay;
 import org.digitalcampus.mquiz.model.questiontypes.MultipleChoice;
+import org.digitalcampus.mquiz.widgets.EssayWidget;
 import org.digitalcampus.mquiz.widgets.MultipleChoiceWidget;
 import org.digitalcampus.mquiz.widgets.QuestionWidget;
 
@@ -108,9 +110,13 @@ public class QuizActivity extends Activity {
     	int qTotal = quiz.questions.size();
     	this.setTitle(getString(R.string.title_quiz,quiz.getTitle(),qNo,qTotal));
 
+    	Log.d(TAG,q.getQtype());
     	if(q.getQtype().equals("multichoice")){
-    		qw = new MultipleChoiceWidget(QuizActivity.this);
     		
+    		qw = new MultipleChoiceWidget(QuizActivity.this);
+    	}
+    	if(q.getQtype().equals("essay")){
+    		qw = new EssayWidget(QuizActivity.this);
     	}
     	
     	// show the responses
@@ -160,34 +166,44 @@ public class QuizActivity extends Activity {
 		Cursor questionCur = dbHelper.getQuestionsForQuiz(quizrefid);
 		questionCur.moveToFirst();
 		while (questionCur.isAfterLast() == false) { 
-			QuizQuestion q = new MultipleChoice();
-			q.setDbid(questionCur.getInt(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_ID)));
-			q.setRefid(questionCur.getString(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_REFID)));
-			q.setQuizRefid(quizrefid);
-			q.setMaxscore(questionCur.getInt(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_MAXSCORE)));
-			q.setOrderno(questionCur.getInt(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_ORDERNO)));
-			q.setQtext(questionCur.getString(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_TEXT)));
-			q.setQtype(questionCur.getString(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_TYPE)));
-			q.setQhint(questionCur.getString(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_HINT)));
+			QuizQuestion q = null;
 			
-			// add responses
-			Cursor respCur = dbHelper.getResponsesForQuestion(quizrefid, questionCur.getString(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_REFID)));
-			respCur.moveToFirst();
-			while (respCur.isAfterLast() == false) { 
-				Response r = new Response();
-				r.setDbid(respCur.getInt(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_ID)));
-				r.setRefid(respCur.getString(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_REFID)));
-				r.setQuizRefid(respCur.getString(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_QUIZREFID)));
-				r.setQuestionRefid(respCur.getString(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_QUESTIONREFID)));
-				r.setScore(respCur.getFloat(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_SCORE)));
-				r.setOrderno(respCur.getInt(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_ORDERNO)));
-				r.setText(respCur.getString(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_TEXT)));
-				
-				q.addResponse(r);
-				respCur.moveToNext();
+			String type = questionCur.getString(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_TYPE));
+			if(type.equals("multichoice")){
+				q = new MultipleChoice();
 			}
 			
-			quiz.addQuestion(q);
+			if(type.equals("essay")){
+				q = new Essay();
+			}
+			
+			if(q != null){
+				q.setDbid(questionCur.getInt(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_ID)));
+				q.setRefid(questionCur.getString(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_REFID)));
+				q.setQuizRefid(quizrefid);
+				q.setMaxscore(questionCur.getInt(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_MAXSCORE)));
+				q.setOrderno(questionCur.getInt(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_ORDERNO)));
+				q.setQtext(questionCur.getString(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_TEXT)));
+				q.setQtype(type);
+				q.setQhint(questionCur.getString(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_HINT)));
+				
+				// add responses
+				Cursor respCur = dbHelper.getResponsesForQuestion(quizrefid, questionCur.getString(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_REFID)));
+				respCur.moveToFirst();
+				while (respCur.isAfterLast() == false) { 
+					Response r = new Response();
+					r.setDbid(respCur.getInt(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_ID)));
+					r.setQuizRefid(respCur.getString(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_QUIZREFID)));
+					r.setQuestionRefid(respCur.getString(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_QUESTIONREFID)));
+					r.setScore(respCur.getFloat(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_SCORE)));
+					r.setOrderno(respCur.getInt(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_ORDERNO)));
+					r.setText(respCur.getString(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_TEXT)));
+					
+					q.addResponse(r);
+					respCur.moveToNext();
+				}
+				quiz.addQuestion(q);
+			}
 			questionCur.moveToNext();
 		}
 		

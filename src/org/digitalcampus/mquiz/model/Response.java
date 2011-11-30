@@ -10,7 +10,6 @@ public class Response implements Serializable{
 	private static final long serialVersionUID = 5970350772982572264L;
 	private static final String TAG = "Response";
 	private int dbid;
-	private String refid;
 	
 	private String questionrefid;
 	private String quizrefid;
@@ -24,12 +23,6 @@ public class Response implements Serializable{
 	}
 	public void setQuestionRefid(String questionrefid) {
 		this.questionrefid = questionrefid;
-	}
-	public String getRefid() {
-		return refid;
-	}
-	public void setRefid(String refid) {
-		this.refid = refid;
 	}
 	public String getQuizRefid() {
 		return quizrefid;

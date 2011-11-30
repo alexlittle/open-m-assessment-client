@@ -80,7 +80,7 @@ public class DbHelper extends SQLiteOpenHelper{
 	public static final String QUIZ_ATTEMPT_RESPONSE_C_ATTEMPTID = "AttemptID"; //references QUIZ_ATTEMPT_C_ID
 	public static final String QUIZ_ATTEMPT_RESPONSE_C_QUIZREFID = "QuizRefID"; // references Q_C_REFID
 	public static final String QUIZ_ATTEMPT_RESPONSE_C_QUESTIONREFID = "QuizQuestionRefID"; // references QQ_C_REFID
-	public static final String QUIZ_ATTEMPT_RESPONSE_C_RESPONSEREFID = "QuizQuestionResponseRefID"; //references QQR_C_REFID
+	//public static final String QUIZ_ATTEMPT_RESPONSE_C_RESPONSEREFID = "QuizQuestionResponseRefID"; //references QQR_C_REFID
 	public static final String QUIZ_ATTEMPT_RESPONSE_C_SCORE = "QQRScore";
 	public static final String QUIZ_ATTEMPT_RESPONSE_C_TEXT = "QQRText";
 		
@@ -165,7 +165,6 @@ public class DbHelper extends SQLiteOpenHelper{
 								QUIZ_ATTEMPT_RESPONSE_C_ATTEMPTID + " int, " +
 								QUIZ_ATTEMPT_RESPONSE_C_QUIZREFID + " text, " + 
 								QUIZ_ATTEMPT_RESPONSE_C_QUESTIONREFID + " text, " + 
-								QUIZ_ATTEMPT_RESPONSE_C_RESPONSEREFID + " text, " +
 								QUIZ_ATTEMPT_RESPONSE_C_TEXT + " text, " +
 								QUIZ_ATTEMPT_RESPONSE_C_SCORE + " real)"; 
 		Log.d(TAG, "QuizAttempt sql: " + qar_sql);
@@ -441,7 +440,6 @@ public class DbHelper extends SQLiteOpenHelper{
 			while (attCur.isAfterLast() == false) {
 				JSONObject r = new JSONObject();
 				r.put("qid",attCur.getString(attCur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_QUESTIONREFID)));
-				r.put("qrid",attCur.getString(attCur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_RESPONSEREFID)));
 				r.put("score",attCur.getFloat(attCur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_SCORE)));
 				r.put("qrtext",attCur.getString(attCur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_TEXT)));
 				responses.put(r);

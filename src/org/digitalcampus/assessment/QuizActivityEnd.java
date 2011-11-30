@@ -103,7 +103,6 @@ public class QuizActivityEnd extends Activity implements SubmitResultsListener{
 	    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_ATTEMPTID, attemptId);
 	    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_QUIZREFID,quiz.getRefId());
 	    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_QUESTIONREFID, a.getRefid());
-	    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_RESPONSEREFID, "");
 	    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_SCORE, a.getUserscore());
 	    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_TEXT, a.getResponse());
 	    		dbHelper.saveQuizAttemptResponse(rValues);
