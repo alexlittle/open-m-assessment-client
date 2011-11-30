@@ -1,17 +1,18 @@
-package org.digitalcampus.mquiz.model;
+package org.digitalcampus.mquiz.model.questiontypes;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.digitalcampus.mquiz.model.QuizQuestion;
+import org.digitalcampus.mquiz.model.Response;
 
-public class Question implements Serializable{
-	
+public class MultipleChoice implements Serializable, QuizQuestion {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3025790560015898491L;
+	private static final long serialVersionUID = -6605393327170759582L;
 	private static final String TAG = "Question";
 	private int dbid;
 	private String refid;
@@ -128,3 +129,4 @@ public class Question implements Serializable{
 
 
 }
+

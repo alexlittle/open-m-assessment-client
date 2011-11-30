@@ -2,14 +2,11 @@ package org.digitalcampus.assessment;
 
 import org.digitalcampus.mquiz.listeners.SubmitResultsListener;
 import org.digitalcampus.mquiz.model.DbHelper;
-import org.digitalcampus.mquiz.model.Question;
 import org.digitalcampus.mquiz.model.Quiz;
+import org.digitalcampus.mquiz.model.QuizQuestion;
 import org.digitalcampus.mquiz.model.Response;
 import org.digitalcampus.mquiz.tasks.APIRequest;
 import org.digitalcampus.mquiz.tasks.SubmitResultsTask;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -101,7 +98,7 @@ public class QuizActivityEnd extends Activity implements SubmitResultsListener{
     	attemptId = dbHelper.saveQuizAttempt(qValues);
     	
     	if (attemptId != -1){
-	    	for (Question a: quiz.questions){
+	    	for (QuizQuestion a: quiz.questions){
 	    		for (Response r : a.getResponses()){
 	    			if(r.isSelected()){
 			    		ContentValues rValues = new ContentValues();

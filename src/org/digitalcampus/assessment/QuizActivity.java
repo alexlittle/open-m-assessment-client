@@ -1,6 +1,7 @@
 package org.digitalcampus.assessment;
 
 import org.digitalcampus.mquiz.model.*;
+import org.digitalcampus.mquiz.model.questiontypes.MultipleChoice;
 
 import android.app.Activity;
 import android.content.Context;
@@ -91,7 +92,7 @@ public class QuizActivity extends Activity {
     
     private void showQuestion(){    
     	// show the question
-    	Question q = quiz.questions.get(quiz.getCurrentq());
+    	QuizQuestion q = quiz.questions.get(quiz.getCurrentq());
     	TextView qText = (TextView) findViewById(R.id.questiontext);
     	qText.setText(q.getQtext());
     
@@ -178,7 +179,7 @@ public class QuizActivity extends Activity {
 		Cursor questionCur = dbHelper.getQuestionsForQuiz(quizrefid);
 		questionCur.moveToFirst();
 		while (questionCur.isAfterLast() == false) { 
-			Question q = new Question();
+			QuizQuestion q = new MultipleChoice();
 			q.setDbid(questionCur.getInt(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_ID)));
 			q.setRefid(questionCur.getString(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_REFID)));
 			q.setQuizRefid(quizrefid);

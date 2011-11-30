@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.digitalcampus.mquiz.model.Question;
 
 public class Quiz implements Serializable{
 	
@@ -22,13 +21,13 @@ public class Quiz implements Serializable{
 	private int userscore;
 	
 	
-	public List<Question> questions = new ArrayList<Question>();
+	public List<QuizQuestion> questions = new ArrayList<QuizQuestion>();
 	
 	public Quiz(String refid){
 		this.setRefId(refid);
 	}
 	
-	public void addQuestion(Question q){
+	public void addQuestion(QuizQuestion q){
 		questions.add(q);
 	}
 	
@@ -60,7 +59,7 @@ public class Quiz implements Serializable{
 	
 	public void mark(){
 		int total = 0;
-		for (Question q : questions){
+		for (QuizQuestion q : questions){
 			q.mark();
 			total += q.getUserscore();
 		}
