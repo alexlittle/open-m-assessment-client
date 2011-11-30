@@ -19,7 +19,7 @@ import android.util.Log;
 public class DbHelper extends SQLiteOpenHelper{
 	static final String TAG = "DbHelper";
 	static final String DB_NAME = "assessment.db"; 
-	static final int DB_VERSION = 18; 
+	static final int DB_VERSION = 20; 
 	
 	public static final String PROPS_TABLE = "Settings";
 	public static final String PROPS_C_ID = BaseColumns._ID;
@@ -43,6 +43,13 @@ public class DbHelper extends SQLiteOpenHelper{
 	public static final String QUIZ_QUESTION_C_TYPE = "QuizQuestionType";
 	public static final String QUIZ_QUESTION_C_TEXT = "QuizQuestionText";
 	public static final String QUIZ_QUESTION_C_HINT = "QuizQuestionHint";
+	
+	// QuizQuestionProps Table
+	public static final String QUIZ_QUESTION_PROPS_TABLE = "QuizQuestionProps";
+	public static final String QUIZ_QUESTION_PROPS_C_ID = BaseColumns._ID;
+	public static final String QUIZ_QUESTION_PROPS_C_QUESTIONREFID = "QuizQuestionRefID";
+	public static final String QUIZ_QUESTION_PROPS_C_NAME = "QQPName";
+	public static final String QUIZ_QUESTION_PROPS_C_VALUE = "QQPValue";
 	
 	// QuizQuestionResponse Table
 	public static final String QUIZ_QUESTION_RESPONSE_TABLE = "QuizQuestionResponse";
@@ -75,6 +82,7 @@ public class DbHelper extends SQLiteOpenHelper{
 	public static final String QUIZ_ATTEMPT_RESPONSE_C_QUESTIONREFID = "QuizQuestionRefID"; // references QQ_C_REFID
 	public static final String QUIZ_ATTEMPT_RESPONSE_C_RESPONSEREFID = "QuizQuestionResponseRefID"; //references QQR_C_REFID
 	public static final String QUIZ_ATTEMPT_RESPONSE_C_SCORE = "QQRScore";
+	public static final String QUIZ_ATTEMPT_RESPONSE_C_TEXT = "QQRText";
 		
 	private SQLiteDatabase db;
 	
@@ -117,6 +125,15 @@ public class DbHelper extends SQLiteOpenHelper{
 		db.execSQL(qq_sql);
 		Log.d(TAG, "QuizQuestion sql: " + qq_sql);
 		
+		// create QuizQuestion Table
+		String qqp_sql = "create table " + QUIZ_QUESTION_PROPS_TABLE + " (" + 
+							QUIZ_QUESTION_PROPS_C_ID + " integer primary key autoincrement, " + 
+							QUIZ_QUESTION_PROPS_C_QUESTIONREFID + " text, " +
+							QUIZ_QUESTION_PROPS_C_NAME + " text, " + 
+							QUIZ_QUESTION_PROPS_C_VALUE + " text)";
+		db.execSQL(qqp_sql);
+		Log.d(TAG, "QuizQuestion sql: " + qqp_sql);
+		
 		// create QuizQuestionResponse Table
 		String qqr_sql = "create table " + QUIZ_QUESTION_RESPONSE_TABLE + " (" + 
 							QUIZ_QUESTION_RESPONSE_C_ID + " integer primary key autoincrement, " + 
@@ -149,6 +166,7 @@ public class DbHelper extends SQLiteOpenHelper{
 								QUIZ_ATTEMPT_RESPONSE_C_QUIZREFID + " text, " + 
 								QUIZ_ATTEMPT_RESPONSE_C_QUESTIONREFID + " text, " + 
 								QUIZ_ATTEMPT_RESPONSE_C_RESPONSEREFID + " text, " +
+								QUIZ_ATTEMPT_RESPONSE_C_TEXT + " text, " +
 								QUIZ_ATTEMPT_RESPONSE_C_SCORE + " real)"; 
 		Log.d(TAG, "QuizAttempt sql: " + qar_sql);
 		db.execSQL(qar_sql);
@@ -169,6 +187,9 @@ public class DbHelper extends SQLiteOpenHelper{
 		
 		// drop QuizQuestion table
 		db.execSQL("drop table if exists " + QUIZ_QUESTION_TABLE);
+		
+		// drop QuizQuestionProps table
+		db.execSQL("drop table if exists " + QUIZ_QUESTION_PROPS_TABLE);
 		
 		// drop QuizQuestionResponse table
 		db.execSQL("drop table if exists " + QUIZ_QUESTION_RESPONSE_TABLE);
@@ -214,6 +235,11 @@ public class DbHelper extends SQLiteOpenHelper{
 		return db.query(DbHelper.QUIZ_ATTEMPT_TABLE, null, criteria , null, null, null, QUIZ_ATTEMPT_GET_ALL_ORDER_BY_ASC);	
 	}
 
+	public Cursor getUnsubmitted(int id){
+		String criteria = DbHelper.QUIZ_ATTEMPT_C_SUBMITTED + "= 0 AND " + DbHelper.QUIZ_ATTEMPT_C_ID + "=" + String.valueOf(id);
+		return db.query(DbHelper.QUIZ_ATTEMPT_TABLE, null, criteria , null, null, null, QUIZ_ATTEMPT_GET_ALL_ORDER_BY_ASC);	
+	}
+	
 	public Cursor getAttemptResponses(int attemptid){
 		String criteria = DbHelper.QUIZ_ATTEMPT_RESPONSE_C_ATTEMPTID + "=" + String.valueOf(attemptid);
 		return db.query(DbHelper.QUIZ_ATTEMPT_RESPONSE_TABLE, null, criteria , null, null, null, null);
@@ -396,6 +422,37 @@ public class DbHelper extends SQLiteOpenHelper{
 			db.insertOrThrow(DbHelper.PROPS_TABLE, null, rvalues);
 		} 
 		return resp;
+	}
+	
+	public String createSubmitResponseObject(Cursor cur){
+		JSONObject json = new JSONObject();
+		try{
+			// general quiz overview
+			json.put("username", cur.getString(cur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_USERNAME)));
+			json.put("quizid", cur.getString(cur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_QUIZREFID)));
+			json.put("quizdate", cur.getString(cur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_QUIZDATE)));
+			json.put("userscore", cur.getString(cur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_USERSCORE)));
+			json.put("maxscore", cur.getString(cur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_MAXSCORE)));
+	
+			// individual quiz responses
+			JSONArray responses = new JSONArray();
+			Cursor attCur = this.getAttemptResponses(cur.getInt(cur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_ID)));
+			attCur.moveToFirst();
+			while (attCur.isAfterLast() == false) {
+				JSONObject r = new JSONObject();
+				r.put("qid",attCur.getString(attCur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_QUESTIONREFID)));
+				r.put("qrid",attCur.getString(attCur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_RESPONSEREFID)));
+				r.put("score",attCur.getFloat(attCur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_SCORE)));
+				r.put("qrtext",attCur.getString(attCur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_TEXT)));
+				responses.put(r);
+				attCur.moveToNext();
+			}
+			attCur.close();
+			json.put("responses", responses);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return json.toString();
 	}
 	
 }

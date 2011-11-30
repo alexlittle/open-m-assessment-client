@@ -6,8 +6,6 @@ import org.digitalcampus.mquiz.model.DbHelper;
 import org.digitalcampus.mquiz.tasks.APIRequest;
 import org.digitalcampus.mquiz.tasks.DownloadQueueTask;
 import org.digitalcampus.mquiz.tasks.SubmitResultsTask;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -292,53 +290,16 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
 		cur.moveToFirst();
 		while (cur.isAfterLast() == false) {
 			try {
-				JSONObject json = new JSONObject();
-				// general quiz overview
-				json.put("username", cur.getString(cur
-						.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_USERNAME)));
-				json.put("quizid", cur.getString(cur
-						.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_QUIZREFID)));
-				json.put("quizdate", cur.getString(cur
-						.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_QUIZDATE)));
-				json.put("userscore", cur.getString(cur
-						.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_USERSCORE)));
-				json.put("maxscore", cur.getString(cur
-						.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_MAXSCORE)));
-
-				// individual quiz responses
-				JSONArray responses = new JSONArray();
-				Cursor attCur = dbHelper.getAttemptResponses(cur.getInt(cur
-						.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_ID)));
-				attCur.moveToFirst();
-				while (attCur.isAfterLast() == false) {
-					JSONObject r = new JSONObject();
-					r.put("qid",
-							attCur.getString(attCur
-									.getColumnIndex(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_QUESTIONREFID)));
-					r.put("qrid",
-							attCur.getString(attCur
-									.getColumnIndex(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_RESPONSEREFID)));
-					r.put("score",
-							attCur.getFloat(attCur
-									.getColumnIndex(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_SCORE)));
-					responses.put(r);
-					attCur.moveToNext();
-				}
-
-				json.put("responses", responses);
+				String content = dbHelper.createSubmitResponseObject(cur);
 
 				APIRequest r = new APIRequest();
-				r.fullurl = prefs.getString("prefServer",
-						getString(R.string.prefServerDefault)) + "submit/";
-				r.rowId = cur.getInt(cur
-						.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_ID));
+				r.fullurl = prefs.getString("prefServer",getString(R.string.prefServerDefault)) + "api/?method=submit";
+				r.rowId = cur.getInt(cur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_ID));
 				r.username = prefs.getString("prefUsername", "");
 				r.password = prefs.getString("prefPassword", "");
-				r.timeoutConnection = Integer.parseInt(prefs.getString(
-						"prefServerTimeoutConnection", "10000"));
-				r.timeoutSocket = Integer.parseInt(prefs.getString(
-						"prefServerTimeoutResponse", "10000"));
-				r.content = json.toString();
+				r.timeoutConnection = Integer.parseInt(prefs.getString("prefServerTimeoutConnection", "10000"));
+				r.timeoutSocket = Integer.parseInt(prefs.getString("prefServerTimeoutResponse", "10000"));
+				r.content = content;
 				resultsToSend[counter] = r;
 			} catch (Exception e) {
 				e.printStackTrace();

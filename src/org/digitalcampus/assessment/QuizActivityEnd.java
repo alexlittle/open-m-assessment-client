@@ -82,14 +82,14 @@ public class QuizActivityEnd extends Activity implements SubmitResultsListener{
         submitBtn.setOnClickListener(new View.OnClickListener() {
         	@Override
 			public void onClick(View arg0) {
-        		sendResults();
+        		sendResults(attemptId);
         	}
         });
     }
    
     
     private void saveScores(){
-    	// TODO save to db
+    	// save scores to db
         dbHelper = new DbHelper(this);
     	ContentValues qValues = new ContentValues();
     	qValues.put(DbHelper.QUIZ_ATTEMPT_C_QUIZDATE, System.currentTimeMillis()/1000L);
@@ -110,6 +110,7 @@ public class QuizActivityEnd extends Activity implements SubmitResultsListener{
 			    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_QUESTIONREFID, a.getRefid());
 			    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_RESPONSEREFID, r.getRefid());
 			    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_SCORE, r.getScore());
+			    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_TEXT, r.getText());
 			    		dbHelper.saveQuizAttemptResponse(rValues);
 	    			} 
 	    		}
@@ -123,45 +124,28 @@ public class QuizActivityEnd extends Activity implements SubmitResultsListener{
     public void onResultsSubmitted(boolean result){
     	
     }
-    private void sendResults(){
-    	JSONObject json = new JSONObject();
-		// general quiz overview
-		try{
-  	        json.put("username", prefs.getString("prefUsername", ""));
-  	        json.put("quizid", quiz.getRefId());
-  	        json.put("quizdate",  System.currentTimeMillis()/1000L);
-  	        json.put("userscore", quiz.getUserscore());
-  	        json.put("maxscore", quiz.getMaxscore());
-  	        
-  	        // individual quiz responses
-  	        JSONArray responses = new JSONArray();
-  	        dbHelper = new DbHelper(QuizActivityEnd.this);
-  	        Cursor attCur = dbHelper.getAttemptResponses(attemptId.intValue());
-  	        attCur.moveToFirst();
-  	        while (attCur.isAfterLast() == false) {
-  	        	JSONObject r = new JSONObject();
-  	        	r.put("qid", attCur.getString(attCur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_QUESTIONREFID)));
-  	        	r.put("qrid", attCur.getString(attCur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_RESPONSEREFID)));
-  	        	r.put("score", attCur.getFloat(attCur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_SCORE)));
-  	        	responses.put(r);
-  	        	attCur.moveToNext();
-  	        }
-  	        dbHelper.close();
-  	        json.put("responses", responses);
-  	      
-		} catch (JSONException jsone){
-			jsone.printStackTrace();
+    
+    private void sendResults(Long attemptId){
+    	dbHelper = new DbHelper(this);
+    	Cursor cur = dbHelper.getUnsubmitted(attemptId.intValue());
+    	cur.moveToFirst();
+    	String content = "";
+		while (cur.isAfterLast() == false) {
+			content = dbHelper.createSubmitResponseObject(cur);
+			cur.moveToNext();
 		}
+		cur.close();
+		dbHelper.close();
 		
 		APIRequest[] resultsToSend = new APIRequest[1];
 		APIRequest r = new APIRequest();
-        r.fullurl = prefs.getString("prefServer", getString(R.string.prefServerDefault)) + "submit/";
+        r.fullurl = prefs.getString("prefServer", getString(R.string.prefServerDefault))  + "api/?method=submit";
         r.rowId = attemptId.intValue();
         r.username = prefs.getString("prefUsername", "");
         r.password = prefs.getString("prefPassword", "");
         r.timeoutConnection = Integer.parseInt(prefs.getString("prefServerTimeoutConnection", "10000"));
 		r.timeoutSocket = Integer.parseInt(prefs.getString("prefServerTimeoutResponse", "10000"));
-        r.content = json.toString();
+        r.content = content;
         resultsToSend[0] = r;
         
         // show progress dialog

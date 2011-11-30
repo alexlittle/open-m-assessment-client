@@ -87,7 +87,7 @@ public class QuizRemoteList extends ListActivity{
     	// send results as AsyncTask
         GetQuizListTask task = new GetQuizListTask();
         String[] url = new String[1];
-        url[0] = prefs.getString("prefServer", getString(R.string.prefServerDefault))+"list/";
+        url[0] = prefs.getString("prefServer", getString(R.string.prefServerDefault))+"api/?method=list";
         task.execute(url);
     }
     
