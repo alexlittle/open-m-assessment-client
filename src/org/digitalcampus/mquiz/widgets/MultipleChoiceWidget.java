@@ -26,31 +26,11 @@ public class MultipleChoiceWidget extends QuestionWidget {
 		super(context);
 		this.ctx = context;
 		
-		LinearLayout ll = (LinearLayout) ((Activity) ctx).findViewById(R.id.quizQuestion);
+		LinearLayout ll = (LinearLayout) ((Activity) ctx).findViewById(R.id.quizResponseWidget);
 		ll.removeAllViews();
 		LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View vv = vi.inflate(R.layout.widget_multichoice, null);
 		ll.addView(vv);
-	}
-
-	
-	@Override
-	public void setQuestionText(String text) {
-		TextView qText = (TextView) ((Activity) ctx).findViewById(R.id.questiontext);
-    	qText.setText(text);
-		
-	}
-
-	@Override
-	public void setQuestionHint(String text) {
-		TextView qHint = (TextView) ((Activity) ctx).findViewById(R.id.questionhint);
-    	if(text.equals("")){
-    		qHint.setVisibility(View.GONE);
-    	} else {
-    		qHint.setText(text);
-    		qHint.setVisibility(View.VISIBLE);
-    	}
-		
 	}
 
 	@Override
