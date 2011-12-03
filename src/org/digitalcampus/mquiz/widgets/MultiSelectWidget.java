@@ -1,5 +1,7 @@
 package org.digitalcampus.mquiz.widgets;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.digitalcampus.assessment.R;
@@ -41,28 +43,32 @@ public class MultiSelectWidget extends QuestionWidget {
     		CheckBox chk= new CheckBox(ctx);  
     		chk.setText(r.getText());
     		responsesLL.addView(chk);
-    		// TODO find out which are already checked and check these
+    		Iterator<String> itr = currentAnswer.iterator();
+    		while(itr.hasNext()){
+    			String a = itr.next(); 
+    			if(a.equals(r.getText())){
+    				chk.setChecked(true);
+    			}
+    		}
     	}	
 	}
 
 	@Override
 	public List<String> getQuestionResponses(List<Response> responses) {
 		int count = responsesLL.getChildCount();
+		List<String> response = new ArrayList<String>();
 		for (int i=0; i<count; i++) {
 			CheckBox cb = (CheckBox) responsesLL.getChildAt(i);
 			if(cb.isChecked()){
-				Log.d(TAG,cb.getText().toString());
+				response.add(cb.getText().toString());
 			}
 		}
 
-		/*RadioGroup responsesRG = (RadioGroup) ((Activity) ctx).findViewById(234523465);
-		int resp = responsesRG.getCheckedRadioButtonId();
-    	View rb = responsesRG.findViewById(resp);
-    	int idx = responsesRG.indexOfChild(rb);
-    	if (idx >= 0){
-    		return responses.get(idx).getText();
-    	}*/
-    	return null;
+		if(response.size() == 0){
+			return null;
+		} else {
+			return response;
+		}
 	}
 
 }

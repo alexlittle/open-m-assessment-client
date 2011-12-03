@@ -35,6 +35,7 @@ public class MultiSelect implements Serializable, QuizQuestion {
 	public void mark(){
 		// loop through the responses
 		// find whichever are set as selected and add up the responses
+		
 		int total = 0;
 		for (Response r : responses){
 			Iterator<String> itr = this.response.iterator();
@@ -42,6 +43,14 @@ public class MultiSelect implements Serializable, QuizQuestion {
 				String a = itr.next(); 
 				if (r.getText().equals(a)){
 					total += r.getScore();
+				}
+			}
+			// fix marking so that if one of the incorrect scores is selected final mark is 0
+			Iterator<String> itr2 = this.response.iterator();
+			while(itr2.hasNext()) {
+				String a = itr2.next(); 
+				if (r.getText().equals(a) && r.getScore() == 0){
+					total = 0;
 				}
 			}
 		}
