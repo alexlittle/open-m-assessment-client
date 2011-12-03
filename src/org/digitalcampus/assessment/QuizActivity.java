@@ -1,18 +1,21 @@
 package org.digitalcampus.assessment;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
-import org.digitalcampus.mquiz.model.*;
+import org.digitalcampus.mquiz.model.DbHelper;
+import org.digitalcampus.mquiz.model.Quiz;
+import org.digitalcampus.mquiz.model.QuizQuestion;
+import org.digitalcampus.mquiz.model.Response;
 import org.digitalcampus.mquiz.model.questiontypes.Essay;
 import org.digitalcampus.mquiz.model.questiontypes.MultiChoice;
 import org.digitalcampus.mquiz.model.questiontypes.MultiSelect;
+import org.digitalcampus.mquiz.model.questiontypes.ShortAnswer;
 import org.digitalcampus.mquiz.widgets.EssayWidget;
 import org.digitalcampus.mquiz.widgets.MultiChoiceWidget;
 import org.digitalcampus.mquiz.widgets.MultiSelectWidget;
 import org.digitalcampus.mquiz.widgets.QuestionWidget;
+import org.digitalcampus.mquiz.widgets.ShortAnswerWidget;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,9 +25,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
 public class QuizActivity extends Activity {
@@ -127,6 +127,9 @@ public class QuizActivity extends Activity {
     	if(q.getProp("type").equals(MultiSelect.TAG.toLowerCase())){
     		qw = new MultiSelectWidget(QuizActivity.this);
     	}
+    	if(q.getProp("type").equals(ShortAnswer.TAG.toLowerCase())){
+    		qw = new ShortAnswerWidget(QuizActivity.this);
+    	}
     	
     	// show the responses
     	qw.setQuestionText(q.getQtext());
@@ -185,6 +188,9 @@ public class QuizActivity extends Activity {
 			}
 			if(type.equals(MultiSelect.TAG.toLowerCase())){
 				q = new MultiSelect();
+			}
+			if(type.equals(ShortAnswer.TAG.toLowerCase())){
+				q = new ShortAnswer();
 			}
 			
 			if(q != null){

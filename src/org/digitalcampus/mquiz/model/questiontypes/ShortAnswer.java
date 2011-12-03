@@ -41,16 +41,8 @@ public class ShortAnswer implements Serializable, QuizQuestion {
 			Iterator<String> itr = this.response.iterator();
 			while(itr.hasNext()) {
 				String a = itr.next(); 
-				if (r.getText().equals(a)){
+				if (r.getText().toLowerCase().equals(a.toLowerCase())){
 					total += r.getScore();
-				}
-			}
-			// fix marking so that if one of the incorrect scores is selected final mark is 0
-			Iterator<String> itr2 = this.response.iterator();
-			while(itr2.hasNext()) {
-				String a = itr2.next(); 
-				if (r.getText().equals(a) && r.getScore() == 0){
-					total = 0;
 				}
 			}
 		}

@@ -18,7 +18,7 @@ import android.widget.RadioGroup;
 
 public class MatchingWidget extends QuestionWidget {
 
-	private static final String TAG = "MultipleChoiceWidget";
+	private static final String TAG = "MatchingWidget";
 	
 	private Context ctx;
 	
