@@ -8,10 +8,12 @@ import org.digitalcampus.mquiz.model.Quiz;
 import org.digitalcampus.mquiz.model.QuizQuestion;
 import org.digitalcampus.mquiz.model.Response;
 import org.digitalcampus.mquiz.model.questiontypes.Essay;
+import org.digitalcampus.mquiz.model.questiontypes.Matching;
 import org.digitalcampus.mquiz.model.questiontypes.MultiChoice;
 import org.digitalcampus.mquiz.model.questiontypes.MultiSelect;
 import org.digitalcampus.mquiz.model.questiontypes.ShortAnswer;
 import org.digitalcampus.mquiz.widgets.EssayWidget;
+import org.digitalcampus.mquiz.widgets.MatchingWidget;
 import org.digitalcampus.mquiz.widgets.MultiChoiceWidget;
 import org.digitalcampus.mquiz.widgets.MultiSelectWidget;
 import org.digitalcampus.mquiz.widgets.QuestionWidget;
@@ -130,6 +132,9 @@ public class QuizActivity extends Activity {
     	if(q.getProp("type").equals(ShortAnswer.TAG.toLowerCase())){
     		qw = new ShortAnswerWidget(QuizActivity.this);
     	}
+    	if(q.getProp("type").equals(Matching.TAG.toLowerCase())){
+    		qw = new MatchingWidget(QuizActivity.this);
+    	}
     	
     	// show the responses
     	qw.setQuestionText(q.getQtext());
@@ -191,6 +196,9 @@ public class QuizActivity extends Activity {
 			}
 			if(type.equals(ShortAnswer.TAG.toLowerCase())){
 				q = new ShortAnswer();
+			}
+			if(type.equals(Matching.TAG.toLowerCase())){
+				q = new Matching();
 			}
 			
 			if(q != null){
