@@ -14,20 +14,20 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-public class EssayWidget extends QuestionWidget {
+public class ShortAnswerWidget extends QuestionWidget {
 
 	private static final String TAG = "EssayWidget";
 	
 	private Context ctx;
 	
-	public EssayWidget(Context context) {
+	public ShortAnswerWidget(Context context) {
 		super(context);
 		this.ctx = context;
 		
 		LinearLayout ll = (LinearLayout) ((Activity) ctx).findViewById(R.id.quizResponseWidget);
 		ll.removeAllViews();
 		LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View vv = vi.inflate(R.layout.widget_essay, null);
+		View vv = vi.inflate(R.layout.widget_shortanswer, null);
 		ll.addView(vv);
 	}
 
