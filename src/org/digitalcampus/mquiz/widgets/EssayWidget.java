@@ -1,5 +1,7 @@
 package org.digitalcampus.mquiz.widgets;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.digitalcampus.assessment.R;
@@ -34,17 +36,23 @@ public class EssayWidget extends QuestionWidget {
 
 
 	@Override
-	public void setQuestionResponses(List<Response> responses, String currentAnswer) {
+	public void setQuestionResponses(List<Response> responses, List<String> currentAnswers) {
 		EditText et = (EditText) ((Activity) ctx).findViewById(R.id.responsetext);
-		et.setText(currentAnswer);
+		Iterator<String> itr = currentAnswers.iterator(); 
+		while(itr.hasNext()) {
+		    String answer = itr.next(); 
+		    et.setText(answer);
+		} 
 	}
 	
-	public String getQuestionResponse(List<Response> responses){
+	public List<String> getQuestionResponses(List<Response> responses){
 		EditText et = (EditText) ((Activity) ctx).findViewById(R.id.responsetext);
 		if(et.getText().toString().equals("")){
 			return null;
 		} else {
-			return et.getText().toString();
+			List<String> response = new ArrayList<String>();
+			response.add(et.getText().toString());
+			return response;
 		}
 	}
 

@@ -1,6 +1,7 @@
 package org.digitalcampus.mquiz.model.questiontypes;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class Essay implements Serializable, QuizQuestion {
 	private String qtext;
 	private String qhint;
 	private int userscore = 0;
-	private String responseText = "";
+	private List<String> response = new ArrayList<String>();
 	private HashMap<String,String> props = new HashMap<String,String>();
 	
 	@Override
@@ -34,42 +35,46 @@ public class Essay implements Serializable, QuizQuestion {
 	}
 	
 	@Override
-	public void setResponse(String str) {
-		this.responseText = str;
-		
+	public void setResponse(List<String> str) {
+		this.response = str;
 	}
 	
 	@Override
-	public String getResponse() {
-		return this.responseText;
+	public List<String> getResponse() {
+		return this.response;
 	}
+	
 	@Override
 	public void mark() {
 		this.userscore = 0;
 	}
+	
 	@Override
 	public String getRefid() {
 		// TODO Auto-generated method stub
 		return this.refid;
 	}
+	
 	@Override
 	public void setRefid(String refid) {
-		this.refid = refid;
-		
+		this.refid = refid;	
 	}
+	
 	@Override
 	public String getQuizRefid() {
 		return this.quizrefid;
 	}
+	
 	@Override
 	public void setQuizRefid(String quizrefid) {
-		this.quizrefid = quizrefid;
-		
+		this.quizrefid = quizrefid;	
 	}
+	
 	@Override
 	public int getOrderno() {
 		return this.orderno;
 	}
+	
 	@Override
 	public void setOrderno(int orderno) {
 		this.orderno = orderno;	
@@ -79,34 +84,39 @@ public class Essay implements Serializable, QuizQuestion {
 	public String getQtext() {
 		return this.qtext;
 	}
+	
 	@Override
 	public void setQtext(String qtext) {
-		this.qtext = qtext;
-		
+		this.qtext = qtext;	
 	}
+	
 	@Override
 	public int getDbid() {
 		// TODO Auto-generated method stub
 		return this.dbid;
 	}
+	
 	@Override
 	public void setDbid(int dbid) {
 		this.dbid = dbid;
-		
 	}
+	
 	@Override
 	public void setResponses(List<Response> responses) {
 		// do nothing
 	}
+	
 	@Override
 	public int getUserscore() {
 		// TODO Auto-generated method stub
 		return this.userscore;
 	}
+	
 	@Override
 	public String getQhint() {
 		return this.qhint;
 	}
+	
 	@Override
 	public void setQhint(String qhint) {
 		this.qhint = qhint;

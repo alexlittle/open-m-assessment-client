@@ -1,6 +1,9 @@
 package org.digitalcampus.assessment;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import org.digitalcampus.mquiz.model.*;
 import org.digitalcampus.mquiz.model.questiontypes.Essay;
@@ -8,6 +11,7 @@ import org.digitalcampus.mquiz.model.questiontypes.MultiChoice;
 import org.digitalcampus.mquiz.model.questiontypes.MultiSelect;
 import org.digitalcampus.mquiz.widgets.EssayWidget;
 import org.digitalcampus.mquiz.widgets.MultiChoiceWidget;
+import org.digitalcampus.mquiz.widgets.MultiSelectWidget;
 import org.digitalcampus.mquiz.widgets.QuestionWidget;
 
 import android.app.Activity;
@@ -121,7 +125,7 @@ public class QuizActivity extends Activity {
     		qw = new EssayWidget(QuizActivity.this);
     	}
     	if(q.getProp("type").equals(MultiSelect.TAG.toLowerCase())){
-    		qw = new EssayWidget(QuizActivity.this);
+    		qw = new MultiSelectWidget(QuizActivity.this);
     	}
     	
     	// show the responses
@@ -144,13 +148,12 @@ public class QuizActivity extends Activity {
     }
     
     private boolean saveAnswer(){
-    	String answer = qw.getQuestionResponse(quiz.questions.get(quiz.getCurrentq()).getResponses());
-    	if(answer == null){
-    		return false;
-    	} else {
-    		quiz.questions.get(quiz.getCurrentq()).setResponse(answer);
+    	List<String> answers = qw.getQuestionResponses(quiz.questions.get(quiz.getCurrentq()).getResponses());
+    	if(answers != null){
+    		quiz.questions.get(quiz.getCurrentq()).setResponse(answers);
     		return true;
     	}
+		return false;
     }
     
     private void loadQuiz(){

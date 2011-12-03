@@ -37,7 +37,7 @@ public abstract class QuestionWidget extends LinearLayout{
 		
 	}
 	// Abstract methods
-	public abstract void setQuestionResponses(List<Response> responses, String currentAnswer);
-	public abstract String getQuestionResponse(List<Response> responses);
+	public abstract void setQuestionResponses(List<Response> responses, List<String> currentAnswers);
+	public abstract List<String> getQuestionResponses(List<Response> responses);
 
 }

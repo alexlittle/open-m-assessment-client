@@ -1,6 +1,8 @@
 package org.digitalcampus.mquiz.widgets;
 
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.digitalcampus.assessment.R;
@@ -8,13 +10,11 @@ import org.digitalcampus.mquiz.model.Response;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 public class MultiChoiceWidget extends QuestionWidget {
 
@@ -34,10 +34,11 @@ public class MultiChoiceWidget extends QuestionWidget {
 	}
 
 	@Override
-	public void setQuestionResponses(List<Response> responses, String currentAnswer) {
+	public void setQuestionResponses(List<Response> responses, List<String> currentAnswer) {
 		LinearLayout responsesLL = (LinearLayout) ((Activity) ctx).findViewById(R.id.questionresponses);
     	responsesLL.removeAllViews();
     	RadioGroup responsesRG = new RadioGroup(ctx);
+    	// TODO change to use getchild views (like the MultiSelect)
     	responsesRG.setId(234523465);
     	responsesLL.addView(responsesRG);
     	
@@ -47,20 +48,27 @@ public class MultiChoiceWidget extends QuestionWidget {
     	
 			rb.setText(r.getText());
 			responsesRG.addView(rb);
-			if (r.getText() == currentAnswer){
-				rb.setChecked(true);
+			Iterator<String> itr = currentAnswer.iterator();
+			while(itr.hasNext()) {
+				String answer = itr.next(); 
+				if (r.getText() == answer){
+					rb.setChecked(true);
+				}
 			}
     	}
 		
 	}
 	
-	public String getQuestionResponse(List<Response> responses){
+	public List<String> getQuestionResponses(List<Response> responses){
+		// TODO change to use getchild views (like the MultiSelect)
 		RadioGroup responsesRG = (RadioGroup) ((Activity) ctx).findViewById(234523465);
 		int resp = responsesRG.getCheckedRadioButtonId();
     	View rb = responsesRG.findViewById(resp);
     	int idx = responsesRG.indexOfChild(rb);
     	if (idx >= 0){
-    		return responses.get(idx).getText();
+    		List<String> response = new ArrayList<String>();
+			response.add(responses.get(idx).getText());
+    		return response;
     	}
     	return null;
 	}

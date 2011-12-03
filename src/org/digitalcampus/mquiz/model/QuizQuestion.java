@@ -11,9 +11,9 @@ public interface QuizQuestion extends Serializable {
 	
 	public List<Response> getResponses();
 	
-	public void setResponse(String str);
+	public void setResponse(List<String> str);
 	
-	public String getResponse();
+	public List<String> getResponse();
 	
 	public void mark();
 	

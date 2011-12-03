@@ -3,6 +3,7 @@ package org.digitalcampus.mquiz.model.questiontypes;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.digitalcampus.mquiz.model.QuizQuestion;
@@ -23,7 +24,7 @@ public class MultiChoice implements Serializable, QuizQuestion {
 	private String qhint;
 	private List<Response> responses = new ArrayList<Response>();
 	private int userscore = 0;
-	private String responseText = "";
+	private List<String> response = new ArrayList<String>();
 	private HashMap<String,String> props = new HashMap<String,String>();
 	
 	public void addResponse(Response r){
@@ -39,8 +40,12 @@ public class MultiChoice implements Serializable, QuizQuestion {
 		// find whichever are set as selected and add up the responses
 		int total = 0;
 		for (Response r : responses){
-			if (r.getText() == this.responseText){
-				total += r.getScore();
+			Iterator<String> itr = this.response.iterator();
+			while(itr.hasNext()) {
+				String a = itr.next(); 
+				if (r.getText().equals(a)){
+					total += r.getScore();
+				}
 			}
 		}
 		int maxscore = Integer.parseInt(this.getProp("maxscore"));
@@ -107,13 +112,13 @@ public class MultiChoice implements Serializable, QuizQuestion {
 		this.qhint = qhint;
 	}
 
-	public void setResponse(String str) {
-		this.responseText = str;
+	public void setResponse(List<String> str) {
+		this.response = str;
 		
 	}
 
-	public String getResponse() {
-		return this.responseText;
+	public List<String> getResponse() {
+		return this.response;
 	}
 
 	@Override
