@@ -16,13 +16,13 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-public class MultipleChoiceWidget extends QuestionWidget {
+public class MultiChoiceWidget extends QuestionWidget {
 
 	private static final String TAG = "MultipleChoiceWidget";
 	
 	private Context ctx;
 	
-	public MultipleChoiceWidget(Context context) {
+	public MultiChoiceWidget(Context context) {
 		super(context);
 		this.ctx = context;
 		

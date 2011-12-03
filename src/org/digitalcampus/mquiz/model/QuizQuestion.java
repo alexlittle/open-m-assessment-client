@@ -1,11 +1,11 @@
 package org.digitalcampus.mquiz.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 
 
 public interface QuizQuestion extends Serializable {
-	
 	
 	public void addResponse(Response r);
 	
@@ -29,14 +29,6 @@ public interface QuizQuestion extends Serializable {
 	
 	public void setOrderno(int orderno);
 	
-	public int getMaxscore();
-	
-	public void setMaxscore(int maxscore);
-	
-	public String getQtype();
-	
-	public void setQtype(String qtype);
-	
 	public String getQtext();
 	
 	public void setQtext(String qtext);
@@ -52,4 +44,8 @@ public interface QuizQuestion extends Serializable {
 	public String getQhint();
 
 	public void setQhint(String qhint);
+	
+	public void setProps(HashMap<String,String> props);
+	
+	public String getProp(String key);
 }

@@ -1,10 +1,13 @@
 package org.digitalcampus.assessment;
 
+import java.util.HashMap;
+
 import org.digitalcampus.mquiz.model.*;
 import org.digitalcampus.mquiz.model.questiontypes.Essay;
-import org.digitalcampus.mquiz.model.questiontypes.MultipleChoice;
+import org.digitalcampus.mquiz.model.questiontypes.MultiChoice;
+import org.digitalcampus.mquiz.model.questiontypes.MultiSelect;
 import org.digitalcampus.mquiz.widgets.EssayWidget;
-import org.digitalcampus.mquiz.widgets.MultipleChoiceWidget;
+import org.digitalcampus.mquiz.widgets.MultiChoiceWidget;
 import org.digitalcampus.mquiz.widgets.QuestionWidget;
 
 import android.app.Activity;
@@ -110,12 +113,14 @@ public class QuizActivity extends Activity {
     	int qTotal = quiz.questions.size();
     	this.setTitle(getString(R.string.title_quiz,quiz.getTitle(),qNo,qTotal));
 
-    	Log.d(TAG,q.getQtype());
-    	if(q.getQtype().equals("multichoice")){
-    		
-    		qw = new MultipleChoiceWidget(QuizActivity.this);
+    	Log.d(TAG,q.getProp("type"));
+    	if(q.getProp("type").equals(MultiChoice.TAG.toLowerCase())){
+    		qw = new MultiChoiceWidget(QuizActivity.this);
     	}
-    	if(q.getQtype().equals("essay")){
+    	if(q.getProp("type").equals(Essay.TAG.toLowerCase())){
+    		qw = new EssayWidget(QuizActivity.this);
+    	}
+    	if(q.getProp("type").equals(MultiSelect.TAG.toLowerCase())){
     		qw = new EssayWidget(QuizActivity.this);
     	}
     	
@@ -169,22 +174,25 @@ public class QuizActivity extends Activity {
 			QuizQuestion q = null;
 			
 			String type = questionCur.getString(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_TYPE));
-			if(type.equals("multichoice")){
-				q = new MultipleChoice();
+			if(type.equals(MultiChoice.TAG.toLowerCase())){
+				q = new MultiChoice();
 			}
-			
-			if(type.equals("essay")){
+			if(type.equals(Essay.TAG.toLowerCase())){
 				q = new Essay();
+			}
+			if(type.equals(MultiSelect.TAG.toLowerCase())){
+				q = new MultiSelect();
 			}
 			
 			if(q != null){
+				//Log.d(TAG,"refid:"+questionCur.getString(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_REFID)));
+				HashMap<String,String> props = dbHelper.getQuestionProps(questionCur.getString(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_REFID)));
+				q.setProps(props);
 				q.setDbid(questionCur.getInt(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_ID)));
 				q.setRefid(questionCur.getString(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_REFID)));
 				q.setQuizRefid(quizrefid);
-				q.setMaxscore(questionCur.getInt(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_MAXSCORE)));
 				q.setOrderno(questionCur.getInt(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_ORDERNO)));
 				q.setQtext(questionCur.getString(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_TEXT)));
-				q.setQtype(type);
 				q.setQhint(questionCur.getString(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_HINT)));
 				
 				// add responses

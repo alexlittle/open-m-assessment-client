@@ -2,29 +2,29 @@ package org.digitalcampus.mquiz.model.questiontypes;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.digitalcampus.mquiz.model.QuizQuestion;
 import org.digitalcampus.mquiz.model.Response;
 
-public class MultipleChoice implements Serializable, QuizQuestion {
+public class MultiChoice implements Serializable, QuizQuestion {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6605393327170759582L;
-	private static final String TAG = "MultipleChoice";
+	public static final String TAG = "MultiChoice";
 	private int dbid;
 	private String refid;
 	private String quizrefid;
 	private int orderno;
-	private int maxscore;
-	private String qtype;
 	private String qtext;
 	private String qhint;
 	private List<Response> responses = new ArrayList<Response>();
 	private int userscore = 0;
 	private String responseText = "";
+	private HashMap<String,String> props = new HashMap<String,String>();
 	
 	public void addResponse(Response r){
 		responses.add(r);
@@ -43,6 +43,7 @@ public class MultipleChoice implements Serializable, QuizQuestion {
 				total += r.getScore();
 			}
 		}
+		int maxscore = Integer.parseInt(this.getProp("maxscore"));
 		if (total > maxscore){
 			userscore = maxscore;
 		} else {
@@ -72,22 +73,6 @@ public class MultipleChoice implements Serializable, QuizQuestion {
 	
 	public void setOrderno(int orderno) {
 		this.orderno = orderno;
-	}
-	
-	public int getMaxscore() {
-		return maxscore;
-	}
-	
-	public void setMaxscore(int maxscore) {
-		this.maxscore = maxscore;
-	}
-	
-	public String getQtype() {
-		return qtype;
-	}
-	
-	public void setQtype(String qtype) {
-		this.qtype = qtype;
 	}
 	
 	public String getQtext() {
@@ -130,8 +115,16 @@ public class MultipleChoice implements Serializable, QuizQuestion {
 	public String getResponse() {
 		return this.responseText;
 	}
-	
 
+	@Override
+	public void setProps(HashMap<String,String> props) {
+		this.props = props;
+	}
+	
+	@Override
+	public String getProp(String key) {
+		return props.get(key);
+	}
 
 }
 

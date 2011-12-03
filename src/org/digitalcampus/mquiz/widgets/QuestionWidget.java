@@ -14,6 +14,7 @@ import android.widget.TextView;
 public abstract class QuestionWidget extends LinearLayout{
 	
 	private Context ctx;
+	
 	public QuestionWidget(Context context) {
 		super(context);
 		this.ctx = context;
