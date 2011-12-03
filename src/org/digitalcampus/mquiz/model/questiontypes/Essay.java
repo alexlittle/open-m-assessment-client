@@ -22,26 +22,21 @@ public class Essay implements Serializable, QuizQuestion {
 	private String qtext;
 	private String qhint;
 	private int userscore = 0;
-	private List<String> response = new ArrayList<String>();
+	private List<String> userResponses = new ArrayList<String>();
 	private HashMap<String,String> props = new HashMap<String,String>();
 	
 	@Override
-	public void addResponse(Response r) {
+	public void addResponseOption(Response r) {
 		// do nothing
 	}
 	@Override
-	public List<Response> getResponses() {
+	public List<Response> getResponseOptions() {
 		return null;
 	}
 	
 	@Override
-	public void setResponse(List<String> str) {
-		this.response = str;
-	}
-	
-	@Override
-	public List<String> getResponse() {
-		return this.response;
+	public List<String> getUserResponses() {
+		return this.userResponses;
 	}
 	
 	@Override
@@ -102,7 +97,7 @@ public class Essay implements Serializable, QuizQuestion {
 	}
 	
 	@Override
-	public void setResponses(List<Response> responses) {
+	public void setResponseOptions(List<Response> responses) {
 		// do nothing
 	}
 	
@@ -130,6 +125,11 @@ public class Essay implements Serializable, QuizQuestion {
 	@Override
 	public String getProp(String key) {
 		return props.get(key);
+	}
+	@Override
+	public void setUserResponses(List<String> str) {
+		this.userResponses = str;
+		
 	}
 
 }

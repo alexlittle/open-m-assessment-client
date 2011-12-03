@@ -105,7 +105,7 @@ public class QuizActivityEnd extends Activity implements SubmitResultsListener{
 	    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_QUESTIONREFID, a.getRefid());
 	    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_SCORE, a.getUserscore());
 	    		// build a new string from the response
-	    		String response = a.getResponse().toString();
+	    		String response = a.getUserResponses().toString();
 	    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_TEXT, response);
 	    		dbHelper.saveQuizAttemptResponse(rValues);
 	    	}

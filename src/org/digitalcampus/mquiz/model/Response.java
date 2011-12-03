@@ -1,6 +1,7 @@
 package org.digitalcampus.mquiz.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 public class Response implements Serializable{
 
@@ -17,6 +18,7 @@ public class Response implements Serializable{
 	private int orderno;
 	private String text;
 	private float score;
+	private HashMap<String,String> props = new HashMap<String,String>();
 	
 	public String getQuestionRefid() {
 		return questionrefid;
@@ -45,14 +47,25 @@ public class Response implements Serializable{
 	public float getScore() {
 		return score;
 	}
+	
 	public void setScore(float score) {
 		this.score = score;
 	}
+	
 	public int getDbid() {
 		return dbid;
 	}
+	
 	public void setDbid(int dbid) {
 		this.dbid = dbid;
+	}
+
+	public void setProps(HashMap<String,String> props) {
+		this.props = props;
+	}
+	
+	public String getProp(String key) {
+		return props.get(key);
 	}
 	
 	

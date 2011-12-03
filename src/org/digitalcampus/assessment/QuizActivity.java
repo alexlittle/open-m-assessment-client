@@ -11,11 +11,13 @@ import org.digitalcampus.mquiz.model.questiontypes.Essay;
 import org.digitalcampus.mquiz.model.questiontypes.Matching;
 import org.digitalcampus.mquiz.model.questiontypes.MultiChoice;
 import org.digitalcampus.mquiz.model.questiontypes.MultiSelect;
+import org.digitalcampus.mquiz.model.questiontypes.Numerical;
 import org.digitalcampus.mquiz.model.questiontypes.ShortAnswer;
 import org.digitalcampus.mquiz.widgets.EssayWidget;
 import org.digitalcampus.mquiz.widgets.MatchingWidget;
 import org.digitalcampus.mquiz.widgets.MultiChoiceWidget;
 import org.digitalcampus.mquiz.widgets.MultiSelectWidget;
+import org.digitalcampus.mquiz.widgets.NumericalWidget;
 import org.digitalcampus.mquiz.widgets.QuestionWidget;
 import org.digitalcampus.mquiz.widgets.ShortAnswerWidget;
 
@@ -135,11 +137,14 @@ public class QuizActivity extends Activity {
     	if(q.getProp("type").equals(Matching.TAG.toLowerCase())){
     		qw = new MatchingWidget(QuizActivity.this);
     	}
+    	if(q.getProp("type").equals(Numerical.TAG.toLowerCase())){
+    		qw = new NumericalWidget(QuizActivity.this);
+    	}
     	
     	// show the responses
     	qw.setQuestionText(q.getQtext());
 		qw.setQuestionHint(quiz.questions.get(quiz.getCurrentq()).getQhint());
-		qw.setQuestionResponses(q.getResponses(),q.getResponse());
+		qw.setQuestionResponses(q.getResponseOptions(),q.getUserResponses());
     	
     	if (!quiz.hasNext()){
     		nextBtn.setText(R.string.quiz_end);
@@ -156,9 +161,9 @@ public class QuizActivity extends Activity {
     }
     
     private boolean saveAnswer(){
-    	List<String> answers = qw.getQuestionResponses(quiz.questions.get(quiz.getCurrentq()).getResponses());
+    	List<String> answers = qw.getQuestionResponses(quiz.questions.get(quiz.getCurrentq()).getResponseOptions());
     	if(answers != null){
-    		quiz.questions.get(quiz.getCurrentq()).setResponse(answers);
+    		quiz.questions.get(quiz.getCurrentq()).setUserResponses(answers);
     		return true;
     	}
 		return false;
@@ -200,6 +205,9 @@ public class QuizActivity extends Activity {
 			if(type.equals(Matching.TAG.toLowerCase())){
 				q = new Matching();
 			}
+			if(type.equals(Numerical.TAG.toLowerCase())){
+				q = new Numerical();
+			}
 			
 			if(q != null){
 				//Log.d(TAG,"refid:"+questionCur.getString(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_REFID)));
@@ -214,9 +222,12 @@ public class QuizActivity extends Activity {
 				
 				// add responses
 				Cursor respCur = dbHelper.getResponsesForQuestion(quizrefid, questionCur.getString(questionCur.getColumnIndex(DbHelper.QUIZ_QUESTION_C_REFID)));
+				
 				respCur.moveToFirst();
 				while (respCur.isAfterLast() == false) { 
 					Response r = new Response();
+					HashMap<String,String> rProps = dbHelper.getQuestionProps(respCur.getString(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_REFID)));
+					r.setProps(rProps);
 					r.setDbid(respCur.getInt(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_ID)));
 					r.setQuizRefid(respCur.getString(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_QUIZREFID)));
 					r.setQuestionRefid(respCur.getString(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_QUESTIONREFID)));
@@ -224,7 +235,7 @@ public class QuizActivity extends Activity {
 					r.setOrderno(respCur.getInt(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_ORDERNO)));
 					r.setText(respCur.getString(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_TEXT)));
 					
-					q.addResponse(r);
+					q.addResponseOption(r);
 					respCur.moveToNext();
 				}
 				quiz.addQuestion(q);

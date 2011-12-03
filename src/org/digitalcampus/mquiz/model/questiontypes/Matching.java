@@ -19,17 +19,17 @@ public class Matching implements Serializable, QuizQuestion {
 	private int orderno;
 	private String qtext;
 	private String qhint;
-	private List<Response> responses = new ArrayList<Response>();
+	private List<Response> responseOptions = new ArrayList<Response>();
 	private int userscore = 0;
-	private List<String> response = new ArrayList<String>();
+	private List<String> userResponses = new ArrayList<String>();
 	private HashMap<String,String> props = new HashMap<String,String>();
 	
-	public void addResponse(Response r){
-		responses.add(r);
+	public void addResponseOption(Response r){
+		responseOptions.add(r);
 	}
 	
-	public List<Response> getResponses(){
-		return responses;
+	public List<Response> getResponseOptions(){
+		return responseOptions;
 	}
 	
 	public void mark(){
@@ -37,8 +37,8 @@ public class Matching implements Serializable, QuizQuestion {
 		// find whichever are set as selected and add up the responses
 		
 		int total = 0;
-		for (Response r : responses){
-			Iterator<String> itr = this.response.iterator();
+		for (Response r : responseOptions){
+			Iterator<String> itr = this.userResponses.iterator();
 			while(itr.hasNext()) {
 				String a = itr.next(); 
 				if (r.getText().equals(a)){
@@ -46,7 +46,7 @@ public class Matching implements Serializable, QuizQuestion {
 				}
 			}
 			// fix marking so that if one of the incorrect scores is selected final mark is 0
-			Iterator<String> itr2 = this.response.iterator();
+			Iterator<String> itr2 = this.userResponses.iterator();
 			while(itr2.hasNext()) {
 				String a = itr2.next(); 
 				if (r.getText().equals(a) && r.getScore() == 0){
@@ -102,8 +102,8 @@ public class Matching implements Serializable, QuizQuestion {
 		this.dbid = dbid;
 	}
 
-	public void setResponses(List<Response> responses) {
-		this.responses = responses;
+	public void setResponseOptions(List<Response> responses) {
+		this.responseOptions = responses;
 	}
 
 	public int getUserscore() {
@@ -118,13 +118,9 @@ public class Matching implements Serializable, QuizQuestion {
 		this.qhint = qhint;
 	}
 
-	public void setResponse(List<String> str) {
-		this.response= str;
+	public void setUserResponses(List<String> str) {
+		this.userResponses= str;
 		
-	}
-
-	public List<String> getResponse() {
-		return this.response;
 	}
 
 	@Override
@@ -135,6 +131,11 @@ public class Matching implements Serializable, QuizQuestion {
 	@Override
 	public String getProp(String key) {
 		return props.get(key);
+	}
+
+	@Override
+	public List<String> getUserResponses() {
+		return this.userResponses;
 	}
 
 }

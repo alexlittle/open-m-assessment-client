@@ -20,7 +20,7 @@ import android.util.Log;
 public class DbHelper extends SQLiteOpenHelper{
 	static final String TAG = "DbHelper";
 	static final String DB_NAME = "assessment.db"; 
-	static final int DB_VERSION = 24; 
+	static final int DB_VERSION = 26; 
 	
 	public static final String PROPS_TABLE = "Settings";
 	public static final String PROPS_C_ID = BaseColumns._ID;
@@ -64,7 +64,7 @@ public class DbHelper extends SQLiteOpenHelper{
 	// QuizQuestionResponseProps Table
 	public static final String QUIZ_QUESTION_RESPONSE_PROPS_TABLE = "QuizQuestionResponseProps";
 	public static final String QUIZ_QUESTION_RESPONSE_PROPS_C_ID = BaseColumns._ID;
-	public static final String QUIZ_QUESTION_RESPONSE_PROPS_C_QUESTIONREFID = "QuizQuestionResponseRefID";
+	public static final String QUIZ_QUESTION_RESPONSE_PROPS_C_RESPONSEREFID = "QuizQuestionResponseRefID";
 	public static final String QUIZ_QUESTION_RESPONSE_PROPS_C_KEY = "QQRPKey";
 	public static final String QUIZ_QUESTION_RESPONSE_PROPS_C_VALUE = "QQRPValue";
 	
@@ -154,7 +154,7 @@ public class DbHelper extends SQLiteOpenHelper{
 		// create QuizQuestionProps Table
 		String qqrp_sql = "create table " + QUIZ_QUESTION_RESPONSE_PROPS_TABLE + " (" + 
 							QUIZ_QUESTION_RESPONSE_PROPS_C_ID + " integer primary key autoincrement, " + 
-							QUIZ_QUESTION_RESPONSE_PROPS_C_QUESTIONREFID + " text, " +
+							QUIZ_QUESTION_RESPONSE_PROPS_C_RESPONSEREFID + " text, " +
 							QUIZ_QUESTION_RESPONSE_PROPS_C_KEY + " text, " + 
 							QUIZ_QUESTION_RESPONSE_PROPS_C_VALUE + " text)";
 		db.execSQL(qqrp_sql);
@@ -395,6 +395,18 @@ public class DbHelper extends SQLiteOpenHelper{
 					rvalues.put(DbHelper.QUIZ_QUESTION_RESPONSE_C_SCORE, rscore);
 					db.insertOrThrow(DbHelper.QUIZ_QUESTION_RESPONSE_TABLE, null, rvalues);
 					
+					// add to the QuizQuestionResponseProps
+					JSONObject responseProps = (JSONObject) r.get("props");
+					if(responseProps.names() != null){
+						for (int m = 0; m < responseProps.names().length(); m++) {
+							ContentValues rPropValues = new ContentValues();
+							rPropValues.put(DbHelper.QUIZ_QUESTION_RESPONSE_PROPS_C_RESPONSEREFID, questionRefId);
+							rPropValues.put(DbHelper.QUIZ_QUESTION_RESPONSE_PROPS_C_KEY, responseProps.names().getString(m));
+							rPropValues.put(DbHelper.QUIZ_QUESTION_RESPONSE_PROPS_C_VALUE, responseProps.getString(responseProps.names().getString(m)));
+							db.insertOrThrow(DbHelper.QUIZ_QUESTION_RESPONSE_PROPS_TABLE, null, rPropValues);
+						}
+					}
+					
 				}
 			}
 			return true;
@@ -428,6 +440,23 @@ public class DbHelper extends SQLiteOpenHelper{
 		}
 		return props;
 	}
+	
+	public HashMap<String,String> getResponseProps(String responseRefId){
+		String selection = QUIZ_QUESTION_RESPONSE_PROPS_C_RESPONSEREFID + "= ?";
+		String[] selArgs = new String[] {responseRefId};
+		Cursor c = db.query(QUIZ_QUESTION_RESPONSE_PROPS_TABLE, null, selection , selArgs, null, null, null);
+		HashMap<String,String> props = new HashMap<String,String>();
+		c.moveToFirst();
+		//Log.d(TAG,"Adding props:"+ questionRefId);
+		while(c.isAfterLast() == false){
+			Log.d(TAG,"response prop key:"+c.getString(c.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_PROPS_C_KEY)));
+			Log.d(TAG,"response prop value:"+c.getString(c.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_PROPS_C_VALUE)));
+			props.put(c.getString(c.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_PROPS_C_KEY)), c.getString(c.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_PROPS_C_VALUE)));
+			c.moveToNext();
+		}
+		return props;
+	}
+	
 	public boolean runAutoDownload(int interval){
 		boolean resp = true;
 		if(interval == 0){
