@@ -400,7 +400,7 @@ public class DbHelper extends SQLiteOpenHelper{
 					if(responseProps.names() != null){
 						for (int m = 0; m < responseProps.names().length(); m++) {
 							ContentValues rPropValues = new ContentValues();
-							rPropValues.put(DbHelper.QUIZ_QUESTION_RESPONSE_PROPS_C_RESPONSEREFID, questionRefId);
+							rPropValues.put(DbHelper.QUIZ_QUESTION_RESPONSE_PROPS_C_RESPONSEREFID, responseRefId);
 							rPropValues.put(DbHelper.QUIZ_QUESTION_RESPONSE_PROPS_C_KEY, responseProps.names().getString(m));
 							rPropValues.put(DbHelper.QUIZ_QUESTION_RESPONSE_PROPS_C_VALUE, responseProps.getString(responseProps.names().getString(m)));
 							db.insertOrThrow(DbHelper.QUIZ_QUESTION_RESPONSE_PROPS_TABLE, null, rPropValues);
@@ -449,8 +449,8 @@ public class DbHelper extends SQLiteOpenHelper{
 		c.moveToFirst();
 		//Log.d(TAG,"Adding props:"+ questionRefId);
 		while(c.isAfterLast() == false){
-			Log.d(TAG,"response prop key:"+c.getString(c.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_PROPS_C_KEY)));
-			Log.d(TAG,"response prop value:"+c.getString(c.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_PROPS_C_VALUE)));
+			//Log.d(TAG,"response prop key:"+c.getString(c.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_PROPS_C_KEY)));
+			//Log.d(TAG,"response prop value:"+c.getString(c.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_PROPS_C_VALUE)));
 			props.put(c.getString(c.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_PROPS_C_KEY)), c.getString(c.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_PROPS_C_VALUE)));
 			c.moveToNext();
 		}

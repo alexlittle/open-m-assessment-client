@@ -3,10 +3,13 @@ package org.digitalcampus.mquiz.model.questiontypes;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.digitalcampus.mquiz.model.QuizQuestion;
 import org.digitalcampus.mquiz.model.Response;
+
+import android.util.Log;
 
 public class Numerical implements Serializable, QuizQuestion {
 	
@@ -25,11 +28,11 @@ public class Numerical implements Serializable, QuizQuestion {
 	
 	@Override
 	public void addResponseOption(Response r) {
-		// do nothing
+		responseOptions.add(r);
 	}
 	@Override
 	public List<Response> getResponseOptions() {
-		return null;
+		return responseOptions;
 	}
 	
 	@Override
@@ -39,12 +42,43 @@ public class Numerical implements Serializable, QuizQuestion {
 	
 	@Override
 	public void mark() {
+		Float userAnswer = null;
 		this.userscore = 0;
+		Iterator<String> itr = this.userResponses.iterator();
+		while(itr.hasNext()) {
+			String a = itr.next(); 
+			try{
+				userAnswer = Float.parseFloat(a);
+			} catch (NumberFormatException nfe){
+				
+			}
+		}
+		int total = 0;
+		if(userAnswer != null){
+			// loop through the valid answers and check against these
+			for (Response r : responseOptions){
+				try{
+					Float respNumber = Float.parseFloat(r.getText());
+					Float tolerance = Float.parseFloat(r.getProp("tolerance"));
+					if ((respNumber - tolerance <= userAnswer) && (userAnswer <= respNumber + tolerance)){
+						total += r.getScore();
+					}
+				} catch (NumberFormatException nfe){
+					
+				}
+			}
+		}
+		
+		int maxscore = Integer.parseInt(this.getProp("maxscore"));
+		if (total > maxscore){
+			this.userscore = maxscore;
+		} else {
+			this.userscore = total;
+		}
 	}
 	
 	@Override
 	public String getRefid() {
-		// TODO Auto-generated method stub
 		return this.refid;
 	}
 	
@@ -85,7 +119,6 @@ public class Numerical implements Serializable, QuizQuestion {
 	
 	@Override
 	public int getDbid() {
-		// TODO Auto-generated method stub
 		return this.dbid;
 	}
 	
@@ -101,7 +134,6 @@ public class Numerical implements Serializable, QuizQuestion {
 	
 	@Override
 	public int getUserscore() {
-		// TODO Auto-generated method stub
 		return this.userscore;
 	}
 	
@@ -127,7 +159,6 @@ public class Numerical implements Serializable, QuizQuestion {
 	@Override
 	public void setUserResponses(List<String> str) {
 		this.userResponses = str;
-		
 	}
 
 }

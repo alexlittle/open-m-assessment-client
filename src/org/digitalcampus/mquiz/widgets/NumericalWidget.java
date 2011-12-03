@@ -45,7 +45,6 @@ public class NumericalWidget extends QuestionWidget {
 	
 	public List<String> getQuestionResponses(List<Response> responses){
 		EditText et = (EditText) ((Activity) ctx).findViewById(R.id.responsetext);
-		Log.d(TAG,"Response text: "+ et.getText().toString());
 		if(et.getText().toString().equals("")){
 			return null;
 		} else {

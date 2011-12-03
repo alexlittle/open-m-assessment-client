@@ -226,7 +226,8 @@ public class QuizActivity extends Activity {
 				respCur.moveToFirst();
 				while (respCur.isAfterLast() == false) { 
 					Response r = new Response();
-					HashMap<String,String> rProps = dbHelper.getQuestionProps(respCur.getString(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_REFID)));
+					//Log.d(TAG,"Loading props:"+respCur.getString(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_REFID)));
+					HashMap<String,String> rProps = dbHelper.getResponseProps(respCur.getString(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_REFID)));
 					r.setProps(rProps);
 					r.setDbid(respCur.getInt(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_ID)));
 					r.setQuizRefid(respCur.getString(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_QUIZREFID)));
