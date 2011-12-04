@@ -23,7 +23,7 @@ public class MultiChoice implements Serializable, QuizQuestion {
 	private String qtext;
 	private String qhint;
 	private List<Response> responseOptions = new ArrayList<Response>();
-	private int userscore = 0;
+	private float userscore = 0;
 	private List<String> userResponses = new ArrayList<String>();
 	private HashMap<String,String> props = new HashMap<String,String>();
 	
@@ -38,7 +38,7 @@ public class MultiChoice implements Serializable, QuizQuestion {
 	public void mark(){
 		// loop through the responses
 		// find whichever are set as selected and add up the responses
-		int total = 0;
+		float total = 0;
 		for (Response r : responseOptions){
 			Iterator<String> itr = this.userResponses.iterator();
 			while(itr.hasNext()) {
@@ -100,8 +100,8 @@ public class MultiChoice implements Serializable, QuizQuestion {
 		this.responseOptions = responses;
 	}
 
-	public int getUserscore() {
-		return userscore;
+	public float getUserscore() {
+		return this.userscore;
 	}
 
 	public String getQhint() {

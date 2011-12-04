@@ -22,7 +22,7 @@ public class Numerical implements Serializable, QuizQuestion {
 	private String qtext;
 	private String qhint;
 	private List<Response> responseOptions = new ArrayList<Response>();
-	private int userscore = 0;
+	private float userscore = 0;
 	private List<String> userResponses = new ArrayList<String>();
 	private HashMap<String,String> props = new HashMap<String,String>();
 	
@@ -53,7 +53,7 @@ public class Numerical implements Serializable, QuizQuestion {
 				
 			}
 		}
-		int total = 0;
+		float total = 0;
 		if(userAnswer != null){
 			// loop through the valid answers and check against these
 			for (Response r : responseOptions){
@@ -133,7 +133,7 @@ public class Numerical implements Serializable, QuizQuestion {
 	}
 	
 	@Override
-	public int getUserscore() {
+	public float getUserscore() {
 		return this.userscore;
 	}
 	

@@ -21,7 +21,7 @@ public class Essay implements Serializable, QuizQuestion {
 	private int orderno;
 	private String qtext;
 	private String qhint;
-	private int userscore = 0;
+	private float userscore = 0;
 	private List<String> userResponses = new ArrayList<String>();
 	private HashMap<String,String> props = new HashMap<String,String>();
 	
@@ -102,8 +102,7 @@ public class Essay implements Serializable, QuizQuestion {
 	}
 	
 	@Override
-	public int getUserscore() {
-		// TODO Auto-generated method stub
+	public float getUserscore() {
 		return this.userscore;
 	}
 	

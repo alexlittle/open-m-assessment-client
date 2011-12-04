@@ -39,7 +39,7 @@ public interface QuizQuestion extends Serializable {
 
 	public void setDbid(int dbid);
 
-	public int getUserscore();
+	public float getUserscore();
 
 	public String getQhint();
 

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.util.Log;
+
 
 public class Quiz implements Serializable{
 	
@@ -18,7 +20,7 @@ public class Quiz implements Serializable{
 	private int maxscore;
 	private boolean checked;
 	private int currentq = 0;
-	private int userscore;
+	private float userscore;
 	
 	
 	public List<QuizQuestion> questions = new ArrayList<QuizQuestion>();
@@ -58,7 +60,7 @@ public class Quiz implements Serializable{
 	}
 	
 	public void mark(){
-		int total = 0;
+		float total = 0;
 		for (QuizQuestion q : questions){
 			q.mark();
 			total += q.getUserscore();
@@ -104,8 +106,8 @@ public class Quiz implements Serializable{
 		this.currentq = currentq;
 	}
 
-	public int getUserscore() {
-		return userscore;
+	public float getUserscore() {
+		return this.userscore;
 	}
 
 	public int getMaxscore() {

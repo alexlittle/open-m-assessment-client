@@ -383,7 +383,7 @@ public class DbHelper extends SQLiteOpenHelper{
 					String responseRefId = (String) r.get("refid");
 					int rorderno = Integer.parseInt((String) r.get("orderno"));
 					String rtext = (String) r.get("text");
-					int rscore = Integer.parseInt((String) r.get("score"));
+					Float rscore = Float.parseFloat((String) r.get("score"));
 					
 					// add to QuizQuestionResponse table
 					ContentValues rvalues = new ContentValues();
