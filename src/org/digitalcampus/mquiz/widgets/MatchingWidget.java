@@ -49,47 +49,56 @@ public class MatchingWidget extends QuestionWidget {
     	
     	// this could be tidied up - to use ArrayAdapters/Lists
     	HashMap<String,String> possibleAnswers = new HashMap<String,String>();
+    	int noresponses = 0;
     	for (Response r : responses){
-    		String[] temp = r.getText().split(" -&gt; ");
-    		possibleAnswers.put(temp[0],temp[1]);
+    		String[] temp = r.getText().split("-&gt;",-1);
+    		if(!temp[0].equals("")){
+    			noresponses++;
+    		}
+    		possibleAnswers.put(temp[0].trim(),temp[1].trim());
     	}
     	
     	Iterator<Entry<String, String>> responseIt = possibleAnswers.entrySet().iterator();
     	int counter = 0;
-    	responseLayouts = new LinearLayout[responses.size()];
+    	responseLayouts = new LinearLayout[noresponses];
+    	
     	while (responseIt.hasNext()) {
     		HashMap.Entry<String,String> responsePairs = (HashMap.Entry<String,String>) responseIt.next();
-    		LinearLayout responseLayout = new LinearLayout(ctx);
-    		TextView tv = new TextView(ctx);
-    		
-    		tv.setText(responsePairs.getKey());
-    		
-    		Spinner spinner = new Spinner(ctx);
-    		ArrayAdapter<CharSequence> responseAdapter = new ArrayAdapter<CharSequence>(ctx, android.R.layout.simple_spinner_item); 
-    		responseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    		spinner.setAdapter(responseAdapter); 
-    		Iterator<Entry<String, String>> it = possibleAnswers.entrySet().iterator();
-    		responseAdapter.add(""); 
-    	    while (it.hasNext()) {
-    	        HashMap.Entry<String,String> pairs = (HashMap.Entry<String,String>) it.next();
-    	        responseAdapter.add(pairs.getValue()); 
-    	    }
-    		responseLayout.addView(tv);
-    		responseLayout.addView(spinner);
-    		
-    		// set the selected item based on current responses
-    		for (String s : currentAnswer){
-        		String[] temp = s.split(" -&gt; ",-1);
-        		if(temp[0].equals(responsePairs.getKey())){
-        			int i = responseAdapter.getPosition(temp[1]);
-        			spinner.setSelection(i);	
-        		}
-        	}
-    		responsesLL.addView(responseLayout);
-    		responseLayouts[counter] = responseLayout;
-    		counter++;
-    	}
-		
+    		// only add if there is question text
+    		if(!responsePairs.getKey().equals("")){
+	    		LinearLayout responseLayout = new LinearLayout(ctx);
+	    		responseLayout.setOrientation(LinearLayout.VERTICAL); 
+	    		responseLayout.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT)); 
+	    		TextView tv = new TextView(ctx);
+	    		
+	    		tv.setText(responsePairs.getKey());
+	    		
+	    		Spinner spinner = new Spinner(ctx);
+	    		ArrayAdapter<CharSequence> responseAdapter = new ArrayAdapter<CharSequence>(ctx, android.R.layout.simple_spinner_item); 
+	    		responseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	    		spinner.setAdapter(responseAdapter); 
+	    		Iterator<Entry<String, String>> it = possibleAnswers.entrySet().iterator();
+	    		responseAdapter.add(""); 
+	    	    while (it.hasNext()) {
+	    	        HashMap.Entry<String,String> pairs = (HashMap.Entry<String,String>) it.next();
+	    	        responseAdapter.add(pairs.getValue()); 
+	    	    }
+	    		responseLayout.addView(tv);
+	    		responseLayout.addView(spinner);
+	    		
+	    		// set the selected item based on current responses
+	    		for (String s : currentAnswer){
+	        		String[] temp = s.split("-&gt;",-1);
+	        		if(temp[0].trim().equals(responsePairs.getKey())){
+	        			int i = responseAdapter.getPosition(temp[1].trim());
+	        			spinner.setSelection(i);	
+	        		}
+	        	}
+	    		responsesLL.addView(responseLayout);
+	    		responseLayouts[counter] = responseLayout;
+	    		counter++;
+    		} // end if
+    	} // end while
 	}
 	
 	public List<String> getQuestionResponses(List<Response> responses){
@@ -99,8 +108,13 @@ public class MatchingWidget extends QuestionWidget {
 		for (LinearLayout ll : this.responseLayouts){
 			TextView tv = (TextView) ll.getChildAt(0);
 			Spinner sp = (Spinner) ll.getChildAt(1);
-			String response = tv.getText().toString() + " -&gt; " + sp.getSelectedItem().toString();
-			userResponses.add(response);
+			if(!sp.getSelectedItem().toString().trim().equals("")){
+				String response = tv.getText().toString().trim() + " -&gt; " + sp.getSelectedItem().toString().trim();
+				userResponses.add(response);
+			}
+		}
+		if(userResponses.size() == 0){
+			return null;
 		}
     	return userResponses;
 	}

@@ -121,7 +121,6 @@ public class QuizActivity extends Activity {
     	int qTotal = quiz.questions.size();
     	this.setTitle(getString(R.string.title_quiz,quiz.getTitle(),qNo,qTotal));
 
-    	Log.d(TAG,q.getProp("type"));
     	if(q.getProp("type").equals(MultiChoice.TAG.toLowerCase())){
     		qw = new MultiChoiceWidget(QuizActivity.this);
     	}
@@ -226,7 +225,6 @@ public class QuizActivity extends Activity {
 				respCur.moveToFirst();
 				while (respCur.isAfterLast() == false) { 
 					Response r = new Response();
-					//Log.d(TAG,"Loading props:"+respCur.getString(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_REFID)));
 					HashMap<String,String> rProps = dbHelper.getResponseProps(respCur.getString(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_REFID)));
 					r.setProps(rProps);
 					r.setDbid(respCur.getInt(respCur.getColumnIndex(DbHelper.QUIZ_QUESTION_RESPONSE_C_ID)));
