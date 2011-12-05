@@ -125,10 +125,16 @@ public class Essay implements Serializable, QuizQuestion {
 	public String getProp(String key) {
 		return props.get(key);
 	}
+	
 	@Override
 	public void setUserResponses(List<String> str) {
 		this.userResponses = str;
 		
+	}
+	
+	@Override
+	public String getFeedback() {
+		return "";
 	}
 
 }

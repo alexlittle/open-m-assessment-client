@@ -130,5 +130,11 @@ public class ShortAnswer implements Serializable, QuizQuestion {
 	public List<Response> getResponseOptions() {
 		return this.responseOptions;
 	}
+	
+	@Override
+	public String getFeedback() {
+		// TODO return feedback
+		return "";
+	}
 
 }

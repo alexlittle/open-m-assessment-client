@@ -137,5 +137,10 @@ public class Matching implements Serializable, QuizQuestion {
 	public List<String> getUserResponses() {
 		return this.userResponses;
 	}
+	
+	@Override
+	public String getFeedback() {
+		return "";
+	}
 
 }

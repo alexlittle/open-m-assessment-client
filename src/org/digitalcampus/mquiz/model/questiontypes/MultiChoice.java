@@ -26,6 +26,7 @@ public class MultiChoice implements Serializable, QuizQuestion {
 	private float userscore = 0;
 	private List<String> userResponses = new ArrayList<String>();
 	private HashMap<String,String> props = new HashMap<String,String>();
+	private String feedback = "";
 	
 	public void addResponseOption(Response r){
 		responseOptions.add(r);
@@ -45,6 +46,9 @@ public class MultiChoice implements Serializable, QuizQuestion {
 				String a = itr.next(); 
 				if (r.getText().equals(a)){
 					total += r.getScore();
+					if(!(r.getProp("feedback") == null)){
+						this.feedback = r.getProp("feedback");
+					}
 				}
 			}
 		}
@@ -135,6 +139,12 @@ public class MultiChoice implements Serializable, QuizQuestion {
 	public void setUserResponses(List<String> str) {
 		this.userResponses = str;
 		
+	}
+	
+	@Override
+	public String getFeedback() {
+		this.mark();
+		return this.feedback;
 	}
 
 }

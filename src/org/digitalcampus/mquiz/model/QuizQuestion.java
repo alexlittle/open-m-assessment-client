@@ -48,4 +48,6 @@ public interface QuizQuestion extends Serializable {
 	public void setProps(HashMap<String,String> props);
 	
 	public String getProp(String key);
+	
+	public String getFeedback();
 }

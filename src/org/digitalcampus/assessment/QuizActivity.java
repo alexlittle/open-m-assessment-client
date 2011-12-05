@@ -22,7 +22,9 @@ import org.digitalcampus.mquiz.widgets.QuestionWidget;
 import org.digitalcampus.mquiz.widgets.ShortAnswerWidget;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -71,20 +73,30 @@ public class QuizActivity extends Activity {
 			public void onClick(View arg0) {
         		// save answer
         		if (saveAnswer()){
+        			String feedback = quiz.questions.get(quiz.getCurrentq()).getFeedback();
+        			
 	        		if(quiz.hasNext()){
-	    				quiz.moveNext();
-	    				showQuestion();
+	        			if(feedback.equals("")){
+	        				quiz.moveNext();
+		    				showQuestion();
+	        			} else {
+	        				showFeedback(feedback);
+	        			}
+	    				
 	    			} else {
 	    				quiz.mark();
 	    				//  prevent ability to track back to quiz
-	    				//
-	    				Intent i = new Intent(QuizActivity.this, QuizActivityEnd.class);
-	    				i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-	    				Bundle rb = new Bundle();
-	    				rb.putSerializable("quiz",quiz);
-	    				i.putExtras(rb);
-	    				startActivity(i);
-	    				finish();
+	    				if(feedback.equals("")){
+		    				Intent i = new Intent(QuizActivity.this, QuizActivityEnd.class);
+		    				i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		    				Bundle rb = new Bundle();
+		    				rb.putSerializable("quiz",quiz);
+		    				i.putExtras(rb);
+		    				startActivity(i);
+		    				finish();
+	    				} else {
+		        			showFeedback(feedback);
+		        		}
 	    			}
         		} else {
         			Context context = getApplicationContext();
@@ -243,6 +255,31 @@ public class QuizActivity extends Activity {
 		}
 		
 		dbHelper.close();
+    }
+    
+    private void showFeedback(String msg){
+    	AlertDialog.Builder builder = new AlertDialog.Builder(QuizActivity.this);
+		builder.setTitle("Feedback");
+		builder.setMessage(msg);
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				if(quiz.hasNext()){
+					quiz.moveNext();
+					showQuestion();
+				} else {
+					Intent i = new Intent(QuizActivity.this, QuizActivityEnd.class);
+    				i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+    				Bundle rb = new Bundle();
+    				rb.putSerializable("quiz",quiz);
+    				i.putExtras(rb);
+    				startActivity(i);
+    				finish();
+				}
+			}
+	     });
+		builder.show();
     }
 
 }

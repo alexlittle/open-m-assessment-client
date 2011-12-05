@@ -139,5 +139,10 @@ public class MultiSelect implements Serializable, QuizQuestion {
 		this.userResponses = str;
 		
 	}
+	
+	@Override
+	public String getFeedback() {
+		return "";
+	}
 
 }

@@ -25,6 +25,7 @@ public class Numerical implements Serializable, QuizQuestion {
 	private float userscore = 0;
 	private List<String> userResponses = new ArrayList<String>();
 	private HashMap<String,String> props = new HashMap<String,String>();
+	private String feedback = "";
 	
 	@Override
 	public void addResponseOption(Response r) {
@@ -53,15 +54,22 @@ public class Numerical implements Serializable, QuizQuestion {
 				
 			}
 		}
-		float total = 0;
+		float score = 0;
 		if(userAnswer != null){
+			float currMax = 0;
 			// loop through the valid answers and check against these
 			for (Response r : responseOptions){
 				try{
 					Float respNumber = Float.parseFloat(r.getText());
 					Float tolerance = Float.parseFloat(r.getProp("tolerance"));
 					if ((respNumber - tolerance <= userAnswer) && (userAnswer <= respNumber + tolerance)){
-						total += r.getScore();
+						if(r.getScore() > currMax){
+							score = r.getScore();
+							currMax = r.getScore();
+							if(!(r.getProp("feedback") == null)){
+								this.feedback = r.getProp("feedback");
+							}
+						} 
 					}
 				} catch (NumberFormatException nfe){
 					
@@ -70,10 +78,10 @@ public class Numerical implements Serializable, QuizQuestion {
 		}
 		
 		int maxscore = Integer.parseInt(this.getProp("maxscore"));
-		if (total > maxscore){
+		if (score > maxscore){
 			this.userscore = maxscore;
 		} else {
-			this.userscore = total;
+			this.userscore = score;
 		}
 	}
 	
@@ -159,6 +167,12 @@ public class Numerical implements Serializable, QuizQuestion {
 	@Override
 	public void setUserResponses(List<String> str) {
 		this.userResponses = str;
+	}
+	
+	@Override
+	public String getFeedback() {
+		this.mark();
+		return this.feedback;
 	}
 
 }
