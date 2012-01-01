@@ -7,6 +7,7 @@
 	
 	<string name="main_email_title">Email address</string>
 	<string name="main_login_btn_text">Login</string>
+	<string name="main_logo_alt">Logo</string>
 	<string name="main_manage_btn_text">Manage quizzes</string>
 	<string name="main_menu_message">Digital Campus</string>
 	<string name="main_password_title">Password</string>
@@ -39,7 +40,7 @@
 	<string name="title_register">Register</string>
 	<string name="title_select_quiz">Select a quiz</string>
 	
-	<string name="version">v1.1.7 (27 Nov 2011)</string>
+	<string name="version">v2 (1 Jan 2012)</string>
 	
 
 	
