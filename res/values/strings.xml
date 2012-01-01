@@ -9,7 +9,7 @@
 	<string name="main_login_btn_text">Login</string>
 	<string name="main_logo_alt">Logo</string>
 	<string name="main_manage_btn_text">Manage quizzes</string>
-	<string name="main_menu_message">Digital Campus</string>
+	<string name="main_menu_message">by Digital Campus</string>
 	<string name="main_password_title">Password</string>
 	<string name="main_register_btn_text">Register for mQuiz</string>
 	<string name="main_take_quiz_btn_text">Take a quiz</string>
