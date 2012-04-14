@@ -1,10 +1,27 @@
 package org.digitalcampus.assessment;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.validator.EmailValidator;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.digitalcampus.mquiz.listeners.SubmitResultsListener;
 import org.digitalcampus.mquiz.model.DbHelper;
 import org.digitalcampus.mquiz.tasks.APIRequest;
 import org.digitalcampus.mquiz.tasks.SubmitResultsTask;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -15,6 +32,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -151,7 +169,7 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
     	}
     }
     
-    private void setScreen(){
+    public void setScreen(){
     	if(this.isLoggedIn()){
         	takeQuizBtn.setVisibility(View.VISIBLE);
         	manageQuizBtn.setVisibility(View.VISIBLE);
@@ -200,14 +218,24 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
     		return;
     	}
     	
-    	// set the preferences
-    	Editor editor = prefs.edit();
-    	editor.putString("prefUsername", email);
-    	editor.putString("prefPassword", password);
-    	editor.commit();
+    	// show progress dialog
+        pDialog = new ProgressDialog(this);
+        pDialog.setTitle("Login");
+        pDialog.setMessage("Logging in...");
+        pDialog.setCancelable(true);
+        pDialog.show();
+        
+    	// send results as AsyncTask
+        LoginTask task = new LoginTask();
+        User[] user = new User[1];
+        User u = new User();
+        u.url = prefs.getString("prefServer", getString(R.string.prefServerDefault))+"api/?format=json&method=login";
+        u.username = email;
+        u.password = password;
+        user[0] = u;
+        
+		task.execute(user);
     	
-    	// set to normal main screen
-    	this.setScreen();
     }
     
     
@@ -304,7 +332,6 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
 	public void submitResultsComplete(String msg) {
 		// TODO Auto-generated method stub
     	Log.d(TAG,"submit results completed....");
-    	pDialog.setMessage(msg);
 		pDialog.dismiss();
     	
     	DbHelper dbHelper = new DbHelper(AssessmentActivity.this);
@@ -329,4 +356,104 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
 		Log.d(TAG,"progress update....");
 		pDialog.setMessage(msg);
 	}
+	
+	
+
+
+	private class User{
+		String url;
+		String username;
+		String password;
+	}
+
+	private class LoginTask extends AsyncTask<User, String, String>{
+		
+		@Override
+		protected String doInBackground(User... user){
+			
+			String toRet = "";
+			for (User u : user) {
+				String response = "";
+				
+				HttpParams httpParameters = new BasicHttpParams();
+				int timeoutConnection = 10000;
+				try {
+					timeoutConnection = Integer.parseInt(prefs.getString("prefServerTimeoutConnection", "10000"));
+				} catch (NumberFormatException e){
+					// do nothing - will remain as default as above
+					e.printStackTrace();
+				}
+				HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+				int timeoutSocket = 10000;
+				try {
+					timeoutSocket= Integer.parseInt(prefs.getString("prefServerTimeoutConnection", "10000"));
+				} catch (NumberFormatException e){
+					// do nothing - will remain as default as above
+					e.printStackTrace();
+				}
+				HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+	
+				DefaultHttpClient client = new DefaultHttpClient(httpParameters);
+				HttpPost httpPost = new HttpPost(u.url);
+				try {
+					// add post params
+					List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+					nameValuePairs.add(new BasicNameValuePair("username", u.username));
+					nameValuePairs.add(new BasicNameValuePair("password", u.password));
+					httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+					
+					// make request
+					HttpResponse execute = client.execute(httpPost);
+				
+					// read response
+					InputStream content = execute.getEntity().getContent();
+					BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+					String s = "";
+					while ((s = buffer.readLine()) != null) {
+						response += s;
+						Log.d(TAG,s);
+					}
+					
+					toRet = response;
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+					toRet = "{\"error\":\"Connection error or invalid response from server\"}";
+				}
+			}
+			return toRet;
+		}
+		
+		@Override
+		protected void onPostExecute(String response) {
+			// close dialog and process results
+			pDialog.dismiss();
+			Log.d(TAG,response);
+			try{
+				JSONObject json = new JSONObject(response);
+			
+				if(json.has("error")){
+					String error = (String) json.get("error");
+					showAlert("Error", error);
+				} else if (json.has("login")){
+					// set the preferences
+	    			Editor editor = prefs.edit();
+	    	    	editor.putString("prefUsername", emailField.getText().toString());
+	    	    	editor.putString("prefPassword", passwordField.getText().toString());
+	    	    	editor.commit();
+	    	    	AssessmentActivity.this.setScreen();
+	    	    	
+				} else {
+					showAlert("Error", "Login failed");
+				}
+				
+			} catch (JSONException e){
+				e.printStackTrace();
+				showAlert("Error", "Login failed");
+			}
+			
+		}
+	}
+	
+
 }

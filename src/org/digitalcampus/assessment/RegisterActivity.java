@@ -16,6 +16,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 import android.app.Activity;
@@ -122,7 +124,7 @@ public class RegisterActivity extends Activity implements OnSharedPreferenceChan
         RegisterTask task = new RegisterTask();
         Register[] registration = new Register[1];
         Register r = new Register();
-        r.url = prefs.getString("prefServer", getString(R.string.prefServerDefault))+"api/?method=register";
+        r.url = prefs.getString("prefServer", getString(R.string.prefServerDefault))+"api/?format=json&method=register";
         r.email = email;
         r.password = password;
         r.passwordAgain = passwordAgain;
@@ -212,7 +214,7 @@ public class RegisterActivity extends Activity implements OnSharedPreferenceChan
 					
     			} catch (Exception e) {
     				e.printStackTrace();
-					toRet = "Connection error or invalid response from server";
+					toRet = "{\"error\":\"Connection error or invalid response from server\"}";
 				}
 			}
 			return toRet;
@@ -222,29 +224,27 @@ public class RegisterActivity extends Activity implements OnSharedPreferenceChan
     	protected void onPostExecute(String response) {
     		// close dialog and process results
     		pDialog.dismiss();
+    		Log.d(TAG,response);
+			try{
+				JSONObject json = new JSONObject(response);
 			
-    		if(response.equals("success")){
-    			// set the preferences
-    			Editor editor = prefs.edit();
-    	    	editor.putString("prefUsername", emailField.getText().toString());
-    	    	editor.putString("prefPassword", passwordField.getText().toString());
-    	    	editor.commit();
-    	    	
-    			AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-    			builder.setTitle("Success");
-    			builder.setMessage("You are now registered");
-    			builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-    				@Override
-    				public void onClick(DialogInterface arg0, int arg1) {
-    					// close the activity?
-    					finish();
-    				}
-    		     });
-    			builder.show();
-    		} else {
-    			showAlert("Error", response);
-    		}
+				if(json.has("error")){
+					String error = (String) json.get("error");
+					showAlert("Error", error);
+				} else {
+					// set the preferences
+	    			Editor editor = prefs.edit();
+	    	    	editor.putString("prefUsername", emailField.getText().toString());
+	    	    	editor.putString("prefPassword", passwordField.getText().toString());
+	    	    	editor.commit();
+	    	    	finish();
+				}
+				
+			} catch (JSONException e){
+				e.printStackTrace();
+				showAlert("Error", "Registration failed");
+			}
+    		
 			registerBtn.setEnabled(true);
 			
     	}
