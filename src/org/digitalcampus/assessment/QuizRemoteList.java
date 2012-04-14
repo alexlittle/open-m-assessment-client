@@ -21,7 +21,6 @@ import org.apache.http.params.HttpParams;
 import org.digitalcampus.mquiz.model.DbHelper;
 import org.digitalcampus.mquiz.model.Quiz;
 import org.digitalcampus.mquiz.tasks.APIRequest;
-import org.digitalcampus.mquiz.tasks.QuizDownloadedTask;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -390,8 +389,6 @@ public class QuizRemoteList extends ListActivity{
         				dlQuiz.timeoutConnection = Integer.parseInt(prefs.getString("prefServerTimeoutConnection", "10000"));
         				dlQuiz.timeoutSocket= Integer.parseInt(prefs.getString("prefServerTimeoutResponse", "10000"));
         				dlQuizzes[0] = dlQuiz;	
-        				QuizDownloadedTask task = new QuizDownloadedTask(QuizRemoteList.this);
-        	     		task.execute(dlQuizzes);
     				} else {
     					t += s.name+ ": error parsing quiz\n";
     				}

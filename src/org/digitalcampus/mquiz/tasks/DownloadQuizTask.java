@@ -55,13 +55,6 @@ public class DownloadQuizTask extends AsyncTask<APIRequest, String, List<String>
 				response = "already installed";
 				toRet.add(response);
 				Log.d(TAG,apir.refId + ": " + response);
-				// now log quiz as having being downloaded
-				APIRequest[] dlQuizzes = new APIRequest[1]; 
-				APIRequest dlQuiz = currentRequest.clone();
-				dlQuiz.fullurl = currentRequest.baseurl + "api/?method=downloaded&quizref="+ apir.refId;
-				dlQuizzes[0] = dlQuiz;	
-				QuizDownloadedTask task = new QuizDownloadedTask(myCtx);
-	     		task.execute(dlQuizzes);
 			} else {
 				HttpPost httpPost = new HttpPost(apir.fullurl);
 				try {
@@ -93,14 +86,6 @@ public class DownloadQuizTask extends AsyncTask<APIRequest, String, List<String>
 						DbHelper dbHelper = new DbHelper(myCtx);
 	    				dbHelper.insertQuiz(json);
 	    				dbHelper.close();
-	    				// now log quiz as having being downloaded
-	    				String quizRefId = (String) json.get("refid");
-	    				APIRequest[] dlQuizzes = new APIRequest[1]; 
-	    				APIRequest dlQuiz = currentRequest.clone();
-	    				dlQuiz.fullurl = currentRequest.baseurl + "api/?method=downloaded&quizref="+ quizRefId;
-	    				dlQuizzes[0] = dlQuiz;	
-	    				QuizDownloadedTask task = new QuizDownloadedTask(myCtx);
-	    	     		task.execute(dlQuizzes);
 	    	     		
 	    			} catch (JSONException e){
 	    				//dr.responseObj = response;

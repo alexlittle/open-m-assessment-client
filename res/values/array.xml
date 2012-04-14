@@ -1,23 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array
-		name="autoDownloadIntervalEntries">
-		<item>Every minute (not recommended)</item>
-		<item>Every 2 hours</item>
-		<item>Every 6 hours</item>
-		<item>Every Day</item>
-		<item>Every Week</item>
-		<item>Never</item>
-		
-	</string-array>
-	<string-array
-		name="autoDownloadIntervalValues">
-		<!-- in seconds -->
-		<item>60</item>
-		<item>7200</item>
-		<item>21600</item>
-		<item>86400</item>
-		<item>604800</item>
-		<item>0</item>
-	</string-array>
+
 </resources>
