@@ -68,7 +68,7 @@ public class QuizActivityEnd extends Activity implements SubmitResultsListener{
         		sharingIntent.setType("text/plain");
         		float sc = quiz.getUserscore()*100/quiz.getMaxscore();
         		String title = quiz.getTitle();
-        		String link = "http://mquiz.org/my/download.php?ref="+quiz.getRefId();
+        		String link = "http://mquiz.org/m/#"+quiz.getRefId();
         		String shareText = getString(R.string.quiz_end_share_text,sc,title,link);
         		sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareText);
         		startActivity(Intent.createChooser(sharingIntent,"Share using"));
