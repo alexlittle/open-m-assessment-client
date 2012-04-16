@@ -50,4 +50,5 @@ public interface QuizQuestion extends Serializable {
 	public String getProp(String key);
 	
 	public String getFeedback();
+	
 }

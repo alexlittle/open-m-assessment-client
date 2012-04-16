@@ -354,8 +354,8 @@ public class DbHelper extends SQLiteOpenHelper{
 				int qorderno = Integer.parseInt((String) q.get("orderno"));
 				String qtext = (String) q.get("text");
 				String qhint = (String) q.optString("hint");
-				String type = (String) q.optString("type");
-				
+				String type = (String) q.get("type");
+
 				// add to QuizQuestion table
 				ContentValues qvalues = new ContentValues();
 				qvalues.put(DbHelper.QUIZ_QUESTION_C_REFID, questionRefId);

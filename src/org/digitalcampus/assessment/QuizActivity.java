@@ -133,22 +133,22 @@ public class QuizActivity extends Activity {
     	int qTotal = quiz.questions.size();
     	this.setTitle(getString(R.string.title_quiz,quiz.getTitle(),qNo,qTotal));
 
-    	if(q.getProp("type").equals(MultiChoice.TAG.toLowerCase())){
+    	if(q instanceof MultiChoice){
     		qw = new MultiChoiceWidget(QuizActivity.this);
     	}
-    	if(q.getProp("type").equals(Essay.TAG.toLowerCase())){
+    	if(q instanceof Essay){
     		qw = new EssayWidget(QuizActivity.this);
     	}
-    	if(q.getProp("type").equals(MultiSelect.TAG.toLowerCase())){
+    	if(q instanceof MultiSelect){
     		qw = new MultiSelectWidget(QuizActivity.this);
     	}
-    	if(q.getProp("type").equals(ShortAnswer.TAG.toLowerCase())){
+    	if(q instanceof ShortAnswer){
     		qw = new ShortAnswerWidget(QuizActivity.this);
     	}
-    	if(q.getProp("type").equals(Matching.TAG.toLowerCase())){
+    	if(q instanceof Matching){
     		qw = new MatchingWidget(QuizActivity.this);
     	}
-    	if(q.getProp("type").equals(Numerical.TAG.toLowerCase())){
+    	if(q instanceof Numerical){
     		qw = new NumericalWidget(QuizActivity.this);
     	}
     	
@@ -254,6 +254,7 @@ public class QuizActivity extends Activity {
 			questionCur.moveToNext();
 		}
 		
+		questionCur.close();
 		dbHelper.close();
     }
     
