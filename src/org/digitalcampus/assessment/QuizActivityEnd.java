@@ -45,6 +45,7 @@ public class QuizActivityEnd extends Activity implements SubmitResultsListener{
         	float s = quiz.getUserscore()*100/quiz.getMaxscore();
         	scoreText.setText(String.format("%.0f%%",s)); 
         	saveScores();
+        	sendResults(attemptId);
         } 
        
         Button takeAnotherBtn = (Button) findViewById(R.id.take_another_quiz_btn);
@@ -72,13 +73,13 @@ public class QuizActivityEnd extends Activity implements SubmitResultsListener{
         	}
         });
         
-        submitBtn = (Button) findViewById(R.id.quiz_end_submit_btn);
+        /*submitBtn = (Button) findViewById(R.id.quiz_end_submit_btn);
         submitBtn.setOnClickListener(new View.OnClickListener() {
         	@Override
 			public void onClick(View arg0) {
         		sendResults(attemptId);
         	}
-        });
+        });*/
     }
    
     
@@ -139,7 +140,6 @@ public class QuizActivityEnd extends Activity implements SubmitResultsListener{
         r.content = content;
         resultsToSend[0] = r;
         
-        submitBtn.setEnabled(false);
         Toast.makeText(this, "Sending results", Toast.LENGTH_SHORT).show();
         
         // send results to server
