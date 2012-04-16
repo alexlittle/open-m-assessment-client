@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.apache.http.params.HttpParams;
 import org.digitalcampus.mquiz.model.DbHelper;
 import org.digitalcampus.mquiz.model.Quiz;
 import org.digitalcampus.mquiz.tasks.APIRequest;
+import org.digitalcampus.mquiz.tasks.DownloadQuizTask;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +39,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class QuizRemoteList extends ListActivity{
 
@@ -45,8 +48,9 @@ public class QuizRemoteList extends ListActivity{
 	private SharedPreferences prefs;
 	private Button actionBtn;
 	private boolean downloadedQuizzes;
-	public String[] checkedItems;
 	private QuizAdapter qa;
+	
+	private ArrayList<Quiz> quizList;
 	
 	/** Called when the activity is first created. */
     @Override
@@ -86,7 +90,7 @@ public class QuizRemoteList extends ListActivity{
     	// send results as AsyncTask
         GetQuizListTask task = new GetQuizListTask();
         String[] url = new String[1];
-        url[0] = prefs.getString("prefServer", getString(R.string.prefServerDefault))+"api/?method=list";
+        url[0] = prefs.getString("prefServer", getString(R.string.prefServerDefault))+"api/?&format=json&method=list";
         task.execute(url);
     }
     
@@ -119,7 +123,6 @@ public class QuizRemoteList extends ListActivity{
     			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 
     			DefaultHttpClient client = new DefaultHttpClient(httpParameters);
-    			Log.d(TAG,u);
     			HttpPost httpPost = new HttpPost(u);
     			try {
     				// add post params
@@ -137,7 +140,6 @@ public class QuizRemoteList extends ListActivity{
 					String s = "";
 					while ((s = buffer.readLine()) != null) {
 						response += s;
-						Log.d(TAG,s);
 					}
 					
 					toRet = response;
@@ -159,7 +161,7 @@ public class QuizRemoteList extends ListActivity{
 				parseResponse(response);
 			} catch (JSONException e){
 				Log.d(TAG,response);
-				showErrorAlert(response);
+				showAlert("Error", response);
 				e.printStackTrace();
 			}
 			
@@ -172,25 +174,23 @@ public class QuizRemoteList extends ListActivity{
     	
     	try {
     		
-    		ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
-    		
     		JSONArray json = new JSONArray(response);
-			
+    		Quiz[] quizzes = new Quiz[json.length()];
+    		
     		for(int i=0;i<(json.length());i++){
 			    JSONObject json_obj=json.getJSONObject(i);
-			    HashMap<String,String> item = new HashMap<String,String>();
 			    
-			    item.put("id", json_obj.getString("id"));
-			    item.put("name", json_obj.getString("name"));
-			    item.put("url",json_obj.getString("url"));
-			    list.add(item);
+			    Quiz q = new Quiz(json_obj.getString("id"));
+			    q.setTitle(json_obj.getString("name"));
+			    q.setUrl(json_obj.getString("url"));
+			    quizzes[i] = q;
+	    
 			}
-			
-			qa = new QuizAdapter(this,
-								list,
-								R.layout.quizlist,
-								new String[] {"name"},
-								new int[] {R.id.name});
+    		
+    		quizList = new ArrayList<Quiz>();  
+    		quizList.addAll( Arrays.asList(quizzes) );
+    		    
+    		qa = new QuizAdapter(this, quizList);
 			
 			this.setListAdapter(qa);
 			
@@ -200,15 +200,15 @@ public class QuizRemoteList extends ListActivity{
 			
 		} catch (JSONException e){
 			e.printStackTrace();
-			showErrorAlert("Error processing server response");
+			showAlert("Error","Error processing server response");
 		}
     	
 		
     }
     
-    private void showErrorAlert(String msg){
+    private void showAlert(String title, String msg){
     	AlertDialog alertDialog = new AlertDialog.Builder(QuizRemoteList.this).create();
-		alertDialog.setTitle("Error");
+		alertDialog.setTitle(title);
 		alertDialog.setMessage(msg);
 		alertDialog.setButton("Close", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
@@ -219,196 +219,41 @@ public class QuizRemoteList extends ListActivity{
     
     private void downloadQuizzes(){
     	
-    	// TODO this need tidying up - why looping through twice?
-
-    	// find which quizzes have been marked for download
-		Iterator<String> itr = qa.checkedQuizzes.keySet().iterator();
-		
-		int counter = 0;
-
-		while(itr.hasNext()){
-			String id = itr.next();
-			if (qa.checkedQuizzes.get(id).isChecked()){
-				counter++;	
-			}
-		}
-		
-		// if nothing selected then just return - no need to continue
-		if (counter == 0){
-			return;
-		}
-		
-		Quiz[] quizzes = new Quiz[counter];
-		itr = qa.checkedQuizzes.keySet().iterator();
-		int c=0;
-		while(itr.hasNext()){
-			String id = itr.next();
-			if (qa.checkedQuizzes.get(id).isChecked()){
-				quizzes[c] = qa.checkedQuizzes.get(id);
-				c++;
-			}
-		}
-
-		
-		// show progress dialog
-        pDialog = new ProgressDialog(this);
-        pDialog.setTitle("Downloading");  
-        pDialog.setMessage("Starting download");
-        pDialog.setCancelable(true);
-        pDialog.show();
-		
-        actionBtn.setEnabled(false);
-        
-        // send results as AsyncTask
-        DownloadQuizzesTask task = new DownloadQuizzesTask();
-		task.execute(quizzes);
-    }
-    
-    private class DownloadResult{
-    	String name;
-    	String responseObj;
-    }
-    
-    
-    private class DownloadQuizzesTask extends AsyncTask<Quiz, String, List<DownloadResult>>{
-    	
-    	@Override
-    	protected List<DownloadResult> doInBackground(Quiz... urls){
-    		
-    		List<DownloadResult> toRet = new ArrayList<DownloadResult>();
-    		
-    		for (Quiz q : urls) {
-    			String response = "";
-    			
-    			HttpParams httpParameters = new BasicHttpParams();
-    			int timeoutConnection = 10000;
-    			try {
-    				timeoutConnection = Integer.parseInt(prefs.getString("prefServerTimeoutConnection", "10000"));
-    			} catch (NumberFormatException e){
-    				// do nothing - will remain as default as above
-    				e.printStackTrace();
-    			}
-    			HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
-    			int timeoutSocket = 10000;
-    			try {
-    				timeoutSocket= Integer.parseInt(prefs.getString("prefServerTimeoutResponse", "10000"));
-    			} catch (NumberFormatException e){
-    				// do nothing - will remain as default as above
-    				e.printStackTrace();
-    			}
-    			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
-
-    			DefaultHttpClient client = new DefaultHttpClient(httpParameters);
-    			DbHelper dbh = new DbHelper(QuizRemoteList.this);
-    			Cursor isInstalled = dbh.getQuiz(q.getRefId());
-
-				if(isInstalled.getCount() > 0){
-					DownloadResult dr = new DownloadResult();
-					dr.name	= q.getTitle();
-					dr.responseObj = "already installed";
-					toRet.add(dr);
-					Log.d(TAG,dr.name);
-    			} else {
-	    			HttpPost httpPost = new HttpPost(q.getUrl());
-	    			try {
-	    				String msg = "Downloading '" + q.getTitle() + "'";
-	    				publishProgress(msg);
-	    				
-	    				// add post params
-	    				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-	    				nameValuePairs.add(new BasicNameValuePair("username", prefs.getString("prefUsername", "")));
-	    				nameValuePairs.add(new BasicNameValuePair("password", prefs.getString("prefPassword", "")));
-	    				httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-	    				
-	    				// make request
-						HttpResponse execute = client.execute(httpPost);
-						
-						// read response
-						InputStream content = execute.getEntity().getContent();
-						BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-						String s = "";
-						while ((s = buffer.readLine()) != null) {
-							response += s;
-						}
-						
-						DownloadResult dr = new DownloadResult();
-						dr.name	= q.getTitle();
-						try {
-		    				new JSONObject(response);
-		    				dr.responseObj = response;
-		    			} catch (JSONException e){
-		    				dr.responseObj = response;
-		    			}
-						
-						toRet.add(dr);
-	    				
-	    			} catch (Exception e) {
-	    				e.printStackTrace();
-	    				DownloadResult dr = new DownloadResult();
-						dr.name	= q.getTitle();
-						dr.responseObj = "Connection error or invalid response from server";
-						toRet.add(dr);
-					}
-    			}
-				isInstalled.close();
-				dbh.close();
-			}
-    		
-			return toRet;
-    	}
-    	
-    	@Override
-    	protected void onProgressUpdate(String... strings){
-    		super.onProgressUpdate(strings);
-    		Log.d(TAG, "onProgressUpdate(): " +  String.valueOf( strings[0] ) );
-    		pDialog.setMessage(strings[0]);
-
-    	}
-    	
-    	@Override
-    	protected void onPostExecute(List<DownloadResult> results) {
-    		
-    		pDialog.dismiss();
-    
-    		String t = "";
-    		for (DownloadResult s : results){
-    			try {
-    				JSONObject json = new JSONObject(s.responseObj);
-    				// add to database
-    				DbHelper dbHelper = new DbHelper(QuizRemoteList.this);
-    				boolean loaded = dbHelper.insertQuiz(json);
-    				dbHelper.close();
-    				if (loaded){
-    					t += s.name+ ": successfully downloaded\n";
-    					APIRequest[] dlQuizzes = new APIRequest[1]; 
-        				APIRequest dlQuiz = new APIRequest();
-        				String quizRefId = (String) json.get("refid");
-        				dlQuiz.fullurl = prefs.getString("prefServer", "") + "api/?method=downloaded&quizref="+ quizRefId;
-        				dlQuiz.username = prefs.getString("prefUsername", "");
-        				dlQuiz.password = prefs.getString("prefPassword", "");
-        				dlQuiz.timeoutConnection = Integer.parseInt(prefs.getString("prefServerTimeoutConnection", "10000"));
-        				dlQuiz.timeoutSocket= Integer.parseInt(prefs.getString("prefServerTimeoutResponse", "10000"));
-        				dlQuizzes[0] = dlQuiz;	
-    				} else {
-    					t += s.name+ ": error parsing quiz\n";
-    				}
-    			} catch (JSONException e){
-    				t += s.name+ ": failed ('"+ s.responseObj + "')\n";
-    			}
-    			Log.d(TAG, s.responseObj);
+    	int c = 0;
+    	for(int i=0;i<quizList.size();i++){
+    		Quiz q = (Quiz) (quizList.get(i));
+    		if(q.isChecked()){
+    			c++;
     		}
-    		AlertDialog ab = new AlertDialog.Builder(QuizRemoteList.this).create();
-    		ab.setTitle("Download Results");
-    		ab.setMessage(t);
-    		ab.setButton("Close", new DialogInterface.OnClickListener() {
-    			public void onClick(DialogInterface dialog, int id) {
-    				dialog.cancel();
-    			}});
-    		ab.show();
-    		
-    		actionBtn.setEnabled(true);
-			
     	}
+    	
+    	if(c > 0){
+    		Toast.makeText(this, "Downloading selected quizzes", Toast.LENGTH_SHORT).show();
+    	} else {
+    		Toast.makeText(this, "No quizzes selected", Toast.LENGTH_SHORT).show();
+    		return;
+    	}
+    	
+    	APIRequest[] quizzes = new APIRequest[c];
+    	
+    	int counter = 0;
+    	for(int i=0;i<quizList.size();i++){
+    		Quiz q = (Quiz) (quizList.get(i));
+    		if(q.isChecked()){
+    			APIRequest r = new APIRequest();
+    			r.refId = q.getRef();
+				r.fullurl = q.getUrl();
+				r.username = prefs.getString("prefUsername", "");
+				r.password = prefs.getString("prefPassword", "");
+				r.timeoutConnection = Integer.parseInt(prefs.getString("prefServerTimeoutConnection", "10000"));
+				r.timeoutSocket = Integer.parseInt(prefs.getString("prefServerTimeoutResponse", "10000"));
+				quizzes[counter] = r;
+				counter++;
+    		}
+    	}
+    	
+    	DownloadQuizTask task = new DownloadQuizTask(QuizRemoteList.this,true);
+		task.execute(quizzes);
     }
     
 }

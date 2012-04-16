@@ -68,7 +68,7 @@ public class QuizActivityEnd extends Activity implements SubmitResultsListener{
         		sharingIntent.setType("text/plain");
         		float sc = quiz.getUserscore()*100/quiz.getMaxscore();
         		String title = quiz.getTitle();
-        		String link = "http://mquiz.org/m/#"+quiz.getRefId();
+        		String link = "http://mquiz.org/m/#"+quiz.getRef();
         		String shareText = getString(R.string.quiz_end_share_text,sc,title,link);
         		sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareText);
         		startActivity(Intent.createChooser(sharingIntent,"Share using"));
@@ -90,7 +90,7 @@ public class QuizActivityEnd extends Activity implements SubmitResultsListener{
         dbHelper = new DbHelper(this);
     	ContentValues qValues = new ContentValues();
     	qValues.put(DbHelper.QUIZ_ATTEMPT_C_QUIZDATE, System.currentTimeMillis()/1000L);
-    	qValues.put(DbHelper.QUIZ_ATTEMPT_C_QUIZREFID, quiz.getRefId());
+    	qValues.put(DbHelper.QUIZ_ATTEMPT_C_QUIZREFID, quiz.getRef());
     	qValues.put(DbHelper.QUIZ_ATTEMPT_C_USERNAME, prefs.getString("prefUsername", ""));
     	qValues.put(DbHelper.QUIZ_ATTEMPT_C_USERSCORE, quiz.getUserscore());
     	qValues.put(DbHelper.QUIZ_ATTEMPT_C_MAXSCORE, quiz.getMaxscore());
@@ -101,7 +101,7 @@ public class QuizActivityEnd extends Activity implements SubmitResultsListener{
 	    	for (QuizQuestion a: quiz.questions){
 	    		ContentValues rValues = new ContentValues();
 	    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_ATTEMPTID, attemptId);
-	    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_QUIZREFID,quiz.getRefId());
+	    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_QUIZREFID,quiz.getRef());
 	    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_QUESTIONREFID, a.getRefid());
 	    		rValues.put(DbHelper.QUIZ_ATTEMPT_RESPONSE_C_SCORE, a.getUserscore());
 	    		// build a new string from the response

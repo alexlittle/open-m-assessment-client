@@ -14,7 +14,7 @@ public class Quiz implements Serializable{
 	 */
 	private static final long serialVersionUID = -2416034891439585524L;
 	private static final String TAG = "Quiz";
-	private String refid;
+	private String ref;
 	private String title;
 	private String url;
 	private int maxscore;
@@ -25,8 +25,8 @@ public class Quiz implements Serializable{
 	
 	public List<QuizQuestion> questions = new ArrayList<QuizQuestion>();
 	
-	public Quiz(String refid){
-		this.setRefId(refid);
+	public Quiz(String ref){
+		this.setRef(ref);
 	}
 	
 	public void addQuestion(QuizQuestion q){
@@ -73,11 +73,11 @@ public class Quiz implements Serializable{
 		//Log.d(TAG,"Total score: " + String.valueOf(userscore) + " out of "+ String.valueOf(maxscore));
 	}
 	
-	public String getRefId() {
-		return refid;
+	public String getRef() {
+		return ref;
 	}
-	public void setRefId(String refid) {
-		this.refid = refid;
+	public void setRef(String ref) {
+		this.ref = ref;
 	}
 	public String getTitle() {
 		return title;

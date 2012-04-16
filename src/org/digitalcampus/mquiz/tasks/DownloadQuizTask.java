@@ -23,15 +23,17 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 public class DownloadQuizTask extends AsyncTask<APIRequest, String, List<String>>{
 	
 	private final static String TAG = "DownloadQuizTask";
-	private APIRequest currentRequest;
 	private Context myCtx;
+	private boolean notify;
 	
-	public DownloadQuizTask(Context ctx){
+	public DownloadQuizTask(Context ctx, boolean notify){
 		myCtx = ctx;
+		this.notify = notify;
 	}
 	
 	@Override
@@ -40,7 +42,6 @@ public class DownloadQuizTask extends AsyncTask<APIRequest, String, List<String>
 		List<String> toRet = new ArrayList<String>();
 		
 		for (APIRequest apir : apirs) {
-			currentRequest = apir;
 			String response = "";
 			
 			HttpParams httpParameters = new BasicHttpParams();
@@ -51,15 +52,9 @@ public class DownloadQuizTask extends AsyncTask<APIRequest, String, List<String>
 			// check is quiz already installed
 			DbHelper dbh = new DbHelper(myCtx);
 			Cursor isInstalled = dbh.getQuiz(apir.refId);
-			if(isInstalled.getCount() > 0){
-				response = "already installed";
-				toRet.add(response);
-				Log.d(TAG,apir.refId + ": " + response);
-			} else {
+			if(isInstalled.getCount() == 0){
 				HttpPost httpPost = new HttpPost(apir.fullurl);
 				try {
-					String msg = "Downloading '" + apir.fullurl + "'";
-					publishProgress(msg);
 					
 					// add post params
 					List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
@@ -78,27 +73,20 @@ public class DownloadQuizTask extends AsyncTask<APIRequest, String, List<String>
 						response += s;
 					}
 					
-					//DownloadResult dr = new DownloadResult();
-					//dr.name	= u.getTitle();
 					try {
-						Log.d(TAG,response);
 						JSONObject json = new JSONObject(response);
 						DbHelper dbHelper = new DbHelper(myCtx);
 	    				dbHelper.insertQuiz(json);
+	    				if(json.has("title")){
+	    					publishProgress(json.getString("title"));
+	    				}
 	    				dbHelper.close();
-	    	     		
 	    			} catch (JSONException e){
-	    				//dr.responseObj = response;
 	    			}
 					
-					//toRet.add(dr);
 					
 				} catch (Exception e) {
 					e.printStackTrace();
-					//DownloadResult dr = new DownloadResult();
-					//dr.name	= u.getTitle();
-					//dr.responseObj = "Connection error or invalid response from server";
-					//toRet.add(dr);
 				}
 			}
 			isInstalled.close();
@@ -110,13 +98,15 @@ public class DownloadQuizTask extends AsyncTask<APIRequest, String, List<String>
 	@Override
 	protected void onProgressUpdate(String... strings){
 		super.onProgressUpdate(strings);
-		Log.d(TAG, String.valueOf( strings[0] ) );
+		
+		if(notify){
+			Toast.makeText(myCtx, "Finished downloading:" + strings[0], Toast.LENGTH_SHORT).show();
+		}
 
 	}
 	
 	@Override
 	protected void onPostExecute(List<String> results) {
-	
 		
 	}
 }

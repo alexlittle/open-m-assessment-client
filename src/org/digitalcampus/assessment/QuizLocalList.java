@@ -1,10 +1,12 @@
 package org.digitalcampus.assessment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import org.digitalcampus.mquiz.model.DbHelper;
+import org.digitalcampus.mquiz.model.Quiz;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -21,7 +23,7 @@ public class QuizLocalList extends ListActivity{
 	
 	private QuizAdapter qa;
 	private Button deleteBtn;
-	
+	private ArrayList<Quiz> quizList;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,33 +56,52 @@ public class QuizLocalList extends ListActivity{
 	
 	
 	private void setupList(){
-        ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
-        
+       
         DbHelper dbHelper = new DbHelper(this);
         Cursor cur = dbHelper.getQuizzes();
+        
         cur.moveToFirst();
+        int c= 0;
         while(cur.isAfterLast() == false){
-        	HashMap<String,String> item = new HashMap<String,String>();
-		    
-		    item.put("id", cur.getString(cur.getColumnIndex(DbHelper.QUIZ_C_REFID)));
-		    item.put("name", cur.getString(cur.getColumnIndex(DbHelper.QUIZ_C_TITLE)));
-		    item.put("url","");
-		    list.add(item);
+        	c++;
+        	cur.moveToNext();
+        }
+        Quiz[] quizzes = new Quiz[c];
+        
+        cur.moveToFirst();
+        int i = 0;
+        while(cur.isAfterLast() == false){
+        	Quiz q = new Quiz(cur.getString(cur.getColumnIndex(DbHelper.QUIZ_C_REFID)));
+		    q.setTitle(cur.getString(cur.getColumnIndex(DbHelper.QUIZ_C_TITLE)));
+		    q.setUrl("");
+		    quizzes[i] = q;
+        	i++;
         	cur.moveToNext();
         }
         cur.close();
         dbHelper.close();
-        qa = new QuizAdapter(this,
-				list,
-				R.layout.quizlist,
-				new String[] {"name"},
-				new int[] {R.id.name});
-
-        this.setListAdapter(qa);
+        quizList = new ArrayList<Quiz>();  
+		quizList.addAll( Arrays.asList(quizzes) );
+		
+		qa = new QuizAdapter(this, quizList);
+		
+		this.setListAdapter(qa);
 	}
 	
 	private void deleteQuizzes(){
-		Iterator<String> itr = qa.checkedQuizzes.keySet().iterator();
+		
+		DbHelper dbh = new DbHelper(QuizLocalList.this);
+		for(int i=0;i<quizList.size();i++){
+    		Quiz q = (Quiz) (quizList.get(i));
+    		if(q.isChecked()){
+    			dbh.clearQuiz(q.getRef());
+    		}
+    	}
+		dbh.close();
+		// now reset list
+		setupList();
+		
+		/*Iterator<String> itr = qa.checkedQuizzes.keySet().iterator();
 		DbHelper dbh = new DbHelper(QuizLocalList.this);
 		while(itr.hasNext()){
 			String id = itr.next();
@@ -91,6 +112,6 @@ public class QuizLocalList extends ListActivity{
 		}
 		dbh.close();
 		// now reset list
-		setupList();
+		setupList();*/
 	}
 }
