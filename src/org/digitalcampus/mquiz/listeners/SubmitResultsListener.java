@@ -1,6 +1,6 @@
 package org.digitalcampus.mquiz.listeners;
 
 public interface SubmitResultsListener {
-    void submitResultsComplete(String msg);
+    void submitResultsComplete();
     void progressUpdate(String msg);
 }

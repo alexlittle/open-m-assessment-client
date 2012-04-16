@@ -4,22 +4,20 @@ import org.digitalcampus.mquiz.listeners.SubmitResultsListener;
 import org.digitalcampus.mquiz.model.DbHelper;
 import org.digitalcampus.mquiz.model.Quiz;
 import org.digitalcampus.mquiz.model.QuizQuestion;
-import org.digitalcampus.mquiz.model.Response;
 import org.digitalcampus.mquiz.tasks.APIRequest;
 import org.digitalcampus.mquiz.tasks.SubmitResultsTask;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class QuizActivityEnd extends Activity implements SubmitResultsListener{
 	
@@ -29,7 +27,6 @@ public class QuizActivityEnd extends Activity implements SubmitResultsListener{
 	private DbHelper dbHelper;
 	private SharedPreferences prefs;
 	private Long attemptId;
-	private ProgressDialog pDialog;
 	private Button submitBtn;
 	
     /** Called when the activity is first created. */
@@ -133,7 +130,7 @@ public class QuizActivityEnd extends Activity implements SubmitResultsListener{
 		
 		APIRequest[] resultsToSend = new APIRequest[1];
 		APIRequest r = new APIRequest();
-        r.fullurl = prefs.getString("prefServer", getString(R.string.prefServerDefault))  + "api/?method=submit";
+        r.fullurl = prefs.getString("prefServer", getString(R.string.prefServerDefault))  + "api/?method=submit&format=json";
         r.rowId = attemptId.intValue();
         r.username = prefs.getString("prefUsername", "");
         r.password = prefs.getString("prefPassword", "");
@@ -142,13 +139,8 @@ public class QuizActivityEnd extends Activity implements SubmitResultsListener{
         r.content = content;
         resultsToSend[0] = r;
         
-        // show progress dialog
-        pDialog = new ProgressDialog(this);
-        pDialog.setTitle("Sending");
-        pDialog.setMessage("Sending results...");
-        pDialog.setCancelable(true);
-        pDialog.show();
         submitBtn.setEnabled(false);
+        Toast.makeText(this, "Sending results", Toast.LENGTH_SHORT).show();
         
         // send results to server
         SubmitResultsTask task = new SubmitResultsTask(QuizActivityEnd.this);
@@ -158,19 +150,13 @@ public class QuizActivityEnd extends Activity implements SubmitResultsListener{
 
 
 	@Override
-	public void submitResultsComplete(String msg) {
-		// TODO Auto-generated method stub
-		Log.d(TAG,"submit results completed....");
-		pDialog.setMessage(msg);
-		pDialog.dismiss();
-		
+	public void submitResultsComplete() {
+		Toast.makeText(this, "Results submitted.", Toast.LENGTH_SHORT).show();
 	}
 
 
 	@Override
 	public void progressUpdate(String msg) {
-		// TODO Auto-generated method stub
-		Log.d(TAG,"progress update....");
-		pDialog.setMessage(msg);
+
 	}
 }

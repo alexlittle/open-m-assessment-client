@@ -43,6 +43,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class AssessmentActivity extends Activity implements OnSharedPreferenceChangeListener, SubmitResultsListener{
 	
@@ -286,12 +287,6 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
 		if(noToSubmit == 0){
 			return;
 		}
-		// show progress dialog
-        pDialog = new ProgressDialog(this);
-        pDialog.setTitle("Sending");
-        pDialog.setMessage("Sending results...");
-        pDialog.setCancelable(true);
-        pDialog.show();
         
 		// set up counter and array to pass to AsyncTask
 		int counter = 0;
@@ -304,7 +299,7 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
 				String content = dbHelper.createSubmitResponseObject(cur);
 
 				APIRequest r = new APIRequest();
-				r.fullurl = prefs.getString("prefServer",getString(R.string.prefServerDefault)) + "api/?method=submit";
+				r.fullurl = prefs.getString("prefServer",getString(R.string.prefServerDefault)) + "api/?method=submit&format=json";
 				r.rowId = cur.getInt(cur.getColumnIndex(DbHelper.QUIZ_ATTEMPT_C_ID));
 				r.username = prefs.getString("prefUsername", "");
 				r.password = prefs.getString("prefPassword", "");
@@ -326,13 +321,12 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
 		SubmitResultsTask task = new SubmitResultsTask(this);
 		task.setDownloaderListener(this);
 		task.execute(resultsToSend);
+		Toast.makeText(this, "Sending results", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-	public void submitResultsComplete(String msg) {
-		// TODO Auto-generated method stub
-    	Log.d(TAG,"submit results completed....");
-		pDialog.dismiss();
+	public void submitResultsComplete() {
+    	Toast.makeText(this, "Results submitted.", Toast.LENGTH_SHORT).show();
     	
     	DbHelper dbHelper = new DbHelper(AssessmentActivity.this);
     	
@@ -354,7 +348,6 @@ public class AssessmentActivity extends Activity implements OnSharedPreferenceCh
 	@Override
 	public void progressUpdate(String msg) {
 		Log.d(TAG,"progress update....");
-		pDialog.setMessage(msg);
 	}
 	
 	

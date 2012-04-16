@@ -17,10 +17,12 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.digitalcampus.mquiz.listeners.SubmitResultsListener;
 import org.digitalcampus.mquiz.model.DbHelper;
+import org.json.JSONObject;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 public class SubmitResultsTask extends AsyncTask<APIRequest, String, List<String>>{
 	
@@ -69,19 +71,14 @@ public class SubmitResultsTask extends AsyncTask<APIRequest, String, List<String
 				String s = "";
 				while ((s = buffer.readLine()) != null) {
 					response += s;
-					Log.d(TAG,s);
 				}
 				
-				// process response
-				if (response.equals("success")){
+				JSONObject json = new JSONObject(response);
+				if(json.has("result")){
 					DbHelper dbHelper = new DbHelper(myCtx);
 					dbHelper.setSubmitted(apir.rowId);
 					dbHelper.close();
-				} 
-				
-				String str = "Result "+String.valueOf(counter) + ": " + response;
-				toRet.add(str);
-				Log.d(TAG,str);
+				}
 				
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -95,12 +92,11 @@ public class SubmitResultsTask extends AsyncTask<APIRequest, String, List<String
 	@Override
 	protected void onProgressUpdate(String... strings){
 		super.onProgressUpdate(strings);
-		Log.d(TAG, "onProgressUpdate(): " +  String.valueOf( strings[0] ) );
 
 		synchronized (this) {
             if (mStateListener != null) {
                 // update progress and total
-                mStateListener.progressUpdate(strings[0]);
+                //mStateListener.progressUpdate(strings[0]);
             }
         }
 		
@@ -108,15 +104,10 @@ public class SubmitResultsTask extends AsyncTask<APIRequest, String, List<String
 	
 	@Override
 	protected void onPostExecute(List<String> results) {
-		String msg = "";
-		for (String s : results){
-		     msg += s;
-		     msg += "\n";
-		}
 		
 		synchronized (this) {
             if (mStateListener != null) {
-                mStateListener.submitResultsComplete(msg);
+               mStateListener.submitResultsComplete();
             }
         }
 	}
